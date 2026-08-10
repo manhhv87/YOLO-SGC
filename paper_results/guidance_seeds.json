@@ -1,0 +1,118 @@
+{
+ "classical": {
+  "ang_mean": 5.994384078030402,
+  "ang_med": 4.832356382160783,
+  "far_mean": 0.08626277208339682
+ },
+ "yolov8s": {
+  "weights/main/yolov8s/best.pt": {
+   "ang_mean": 1.9698375016017116,
+   "ang_med": 1.3675872862533893,
+   "far_mean": 0.00875278285403312,
+   "four": 90.36144578313254,
+   "bands_mean": 3.8654618473895583
+  },
+  "weights/seed/yolov8s_s1/best.pt": {
+   "ang_mean": 2.2281937225513797,
+   "ang_med": 1.5030673298759822,
+   "far_mean": 0.01173222012511223,
+   "four": 94.0,
+   "bands_mean": 3.932
+  },
+  "weights/seed/yolov8s_s2/best.pt": {
+   "ang_mean": 2.151774725277691,
+   "ang_med": 1.4816155135376525,
+   "far_mean": 0.010967811535105301,
+   "four": 97.2,
+   "bands_mean": 3.972
+  },
+  "runs/seed5/yolov8s_s3/weights/best.pt": {
+   "ang_mean": 2.179664461539849,
+   "ang_med": 1.4357594768056157,
+   "far_mean": 0.01050470253683475,
+   "four": 92.18436873747495,
+   "bands_mean": 3.911823647294589
+  },
+  "runs/seed5/yolov8s_s4/weights/best.pt": {
+   "ang_mean": 2.0647970195027985,
+   "ang_med": 1.4737891727813164,
+   "far_mean": 0.011241466941711502,
+   "four": 98.0,
+   "bands_mean": 3.972
+  }
+ },
+ "yolov8s_sgc_p345": {
+  "weights/main/yolov8s_sgc_p345/best.pt": {
+   "ang_mean": 2.1003663470901253,
+   "ang_med": 1.5168061995431428,
+   "far_mean": 0.008692342692099364,
+   "four": 96.79358717434869,
+   "bands_mean": 3.963927855711423
+  },
+  "weights/seed/yolov8s_sgc_p345_s1/best.pt": {
+   "ang_mean": 2.1218569258176116,
+   "ang_med": 1.4180539793461593,
+   "far_mean": 0.01000720046573009,
+   "four": 93.2,
+   "bands_mean": 3.914
+  },
+  "weights/seed/yolov8s_sgc_p345_s2/best.pt": {
+   "ang_mean": 2.14514130058943,
+   "ang_med": 1.5100818641760672,
+   "far_mean": 0.010306257172729923,
+   "four": 90.2,
+   "bands_mean": 3.884
+  },
+  "runs/seed5/yolov8s_sgc_p345_s3/weights/best.pt": {
+   "ang_mean": 2.7691968901588675,
+   "ang_med": 1.999534784366913,
+   "far_mean": 0.010707558927282979,
+   "four": 88.4,
+   "bands_mean": 3.852
+  },
+  "runs/seed5/yolov8s_sgc_p345_s4/weights/best.pt": {
+   "ang_mean": 2.1441611002568126,
+   "ang_med": 1.4275900949499931,
+   "far_mean": 0.010663506679351271,
+   "four": 92.38476953907816,
+   "bands_mean": 3.899799599198397
+  }
+ },
+ "yolov8s_sgc_p45": {
+  "weights/main/yolov8s_sgc_p45/best.pt": {
+   "ang_mean": 1.839237989173696,
+   "ang_med": 1.3637294003528355,
+   "far_mean": 0.008907127104753092,
+   "four": 96.79358717434869,
+   "bands_mean": 3.961923847695391
+  },
+  "weights/seed/yolov8s_sgc_p45_s1/best.pt": {
+   "ang_mean": 2.1680694838359904,
+   "ang_med": 1.4874469754375077,
+   "far_mean": 0.011039477088613456,
+   "four": 93.60000000000001,
+   "bands_mean": 3.918
+  },
+  "weights/seed/yolov8s_sgc_p45_s2/best.pt": {
+   "ang_mean": 1.8786530949340403,
+   "ang_med": 1.443745648278311,
+   "far_mean": 0.008735150042768328,
+   "four": 96.6,
+   "bands_mean": 3.958
+  },
+  "runs/seed5/yolov8s_sgc_p45_s3/weights/best.pt": {
+   "ang_mean": 2.407498384752312,
+   "ang_med": 1.6280726425248815,
+   "far_mean": 0.0116086727558186,
+   "four": 88.2,
+   "bands_mean": 3.824
+  },
+  "runs/seed5/yolov8s_sgc_p45_s4/weights/best.pt": {
+   "ang_mean": 2.867651007300644,
+   "ang_med": 1.81682622106033,
+   "far_mean": 0.01294530186020066,
+   "four": 87.97595190380761,
+   "bands_mean": 3.8276553106212425
+  }
+ }
+}

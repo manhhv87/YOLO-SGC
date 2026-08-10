@@ -1,0 +1,19 @@
+# Data and weights do not ship with the code (see README; available on request)
+datasets/
+runs/
+weights/
+*.pt
+*.onnx
+*.zip
+
+# Logs and intermediate results
+*.log
+paper_results/*.log
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+*.egg-info/
+.venv/
+venv/

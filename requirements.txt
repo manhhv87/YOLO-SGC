@@ -1,0 +1,13 @@
+# Environment used for every result in the paper
+torch==2.11.0
+torchvision
+numpy
+opencv-python
+pillow
+pyyaml
+scipy
+matplotlib
+tqdm
+pandas
+psutil
+torch-pruning

@@ -1,0 +1,41 @@
+# YOLOv8 + AFPN neck (ASFF: adaptively spatial feature fusion) — baseline canh tranh cho Bang 1.
+# 3 muc P3/P4/P5 duoc dua ve cung so kenh (256*w), can chinh do phan giai, roi ASFF3 tai moi muc.
+nc: 4
+scales:   # [depth, width, max_channels]
+  n: [0.33, 0.25, 1024]
+  s: [0.33, 0.50, 1024]
+  m: [0.67, 0.75, 768]
+  l: [1.00, 1.00, 512]
+  x: [1.00, 1.25, 512]
+
+backbone:
+  - [-1, 1, Conv, [64, 3, 2]]      # 0-P1/2
+  - [-1, 1, Conv, [128, 3, 2]]     # 1-P2/4
+  - [-1, 3, C2f, [128, True]]      # 2
+  - [-1, 1, Conv, [256, 3, 2]]     # 3-P3/8
+  - [-1, 6, C2f, [256, True]]      # 4
+  - [-1, 1, Conv, [512, 3, 2]]     # 5-P4/16
+  - [-1, 6, C2f, [512, True]]      # 6
+  - [-1, 1, Conv, [1024, 3, 2]]    # 7-P5/32
+  - [-1, 3, C2f, [1024, True]]     # 8
+  - [-1, 1, SPPF, [1024, 5]]       # 9
+
+head:
+  # --- can chinh so kenh 3 muc ve 256*w ---
+  - [4, 1, Conv, [256, 1, 1]]                   # 10  P3'  (stride 8)
+  - [6, 1, Conv, [256, 1, 1]]                   # 11  P4'  (stride 16)
+  - [9, 1, Conv, [256, 1, 1]]                   # 12  P5'  (stride 32)
+  # --- fuse tai P3 (stride 8) ---
+  - [11, 1, nn.Upsample, [None, 2, nearest]]    # 13  P4'->P3
+  - [12, 1, nn.Upsample, [None, 4, nearest]]    # 14  P5'->P3
+  - [[10, 13, 14], 1, ASFF3, [256]]             # 15  P3 out
+  # --- fuse tai P4 (stride 16) ---
+  - [10, 1, Conv, [256, 3, 2]]                  # 16  P3'->P4
+  - [12, 1, nn.Upsample, [None, 2, nearest]]    # 17  P5'->P4
+  - [[16, 11, 17], 1, ASFF3, [256]]             # 18  P4 out
+  # --- fuse tai P5 (stride 32) ---
+  - [10, 1, Conv, [256, 3, 2]]                  # 19  P3'->P4res
+  - [19, 1, Conv, [256, 3, 2]]                  # 20  ->P5res
+  - [11, 1, Conv, [256, 3, 2]]                  # 21  P4'->P5
+  - [[20, 21, 12], 1, ASFF3, [256]]             # 22  P5 out
+  - [[15, 18, 22], 1, Detect, [nc]]             # 23
