@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-"""make_deploy_yaml.py — write the deployment YAML: drop ScaleMapHead and both ScaleMapDown layers.
+"""make_deploy_yaml.py - write the deployment yaml: drop ScaleMapHead and both ScaleMapDown layers.
 
-Three layers are removed (indices 12, 13, 14), so every absolute index from 15 onwards
-shifts down by three. Generated from a checked structure rather than edited by hand.
+Three layers are removed (indices 12, 13 and 14), so every absolute index from 15 onwards
+shifts down by three.
 """
 import sys
 

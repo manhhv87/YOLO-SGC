@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""table1_eval.py — evaluate 12 configurations over 5 seeds for the pre-pruning table.
+"""table1_eval.py - evaluate 12 configurations over 5 seeds for the pre-pruning table.
 
 Seed 0 comes from the original checkpoint in weights/main; seeds 1-4 from runs/table1
 (v5s/v9s/v11s) or weights/seed and runs/seed5 (the pre-existing YOLOv8s family).
@@ -45,7 +45,7 @@ def main():
                 if pt in res[key]:
                     continue
                 if not os.path.exists(pt):
-                    print(f"THIẾU {pt}", flush=True)
+                    print(f"MISSING {pt}", flush=True)
                     continue
                 res[key][pt] = evaluate(pt)
                 r = res[key][pt]

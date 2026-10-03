@@ -1,5 +1,5 @@
-# YOLOv8 + BiFPN neck (weighted fusion) — baseline canh tranh cho Bang 1.
-# Giong PAN chuan cua YOLOv8, chi thay Concat -> BiFPN_Concat2 (fast-normalized weighted concat).
+# YOLOv8s with a BiFPN neck (weighted fusion), neck comparison.
+# The YOLOv8 PAN with Concat replaced by BiFPN_Concat2 (fast normalized weighted concatenation).
 nc: 4
 scales:   # [depth, width, max_channels]
   n: [0.33, 0.25, 1024]

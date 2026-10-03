@@ -1,18 +1,12 @@
 # -*- coding: utf-8 -*-
-"""make_fig_scalemap.py — ScaleMap visualisation figure.
+"""make_fig_scalemap.py - ScaleMap figure.
 
 Four panels in a row:
   (a) input image;
-  (b) scale map (160x160) on a [0,1] scale, min-max normalised per image,
-      with an inset colour bar;
-  (c) the map overlaid on the image with the predicted boxes of the four distance bands;
-  (d) vertical profile: mean map value per image row, averaged over
-      `--profile_n` test images (shaded band = +/-1 standard deviation across images).
-
-Panel (d) is the quantitative evidence for a vertical-position prior: the map value rises
-monotonically from the top of the image (far) to the bottom (near). Note that the mean
-map value *inside the ground-truth boxes* is nearly equal across the four bands (~0.94),
-because every box contains both soil and foliage, so that number is not used to annotate boxes.
+  (b) scale map (160x160) on a [0,1] scale, min-max normalised per image, with a colour bar;
+  (c) the map over the image with the predicted boxes of the four distance bands;
+  (d) vertical profile: mean map value per image row, averaged over --profile_n test images
+      (shaded band = +/-1 standard deviation across images).
 
     python make_fig_scalemap.py                       # -> figures_paper/fig_scalemap_vis.pdf
     python make_fig_scalemap.py --img <test image stem>
@@ -237,7 +231,7 @@ def main():
     print(f"-> {args.out}  ({fig_w / args.dpi:.2f}x{fig_h / args.dpi:.2f} in, "
           f"{os.path.getsize(args.out) / 1e6:.2f} MB)")
     print(f"   image shown: {os.path.basename(imgp)}\n")
-    print(f"   SỐ TRÍCH VÀO BÀI (n={st['n']}, cache {args.profile_cache}):")
+    print(f"   values for the paper (n={st['n']}, cache {args.profile_cache}):")
     print(f"     R^2 row = {st['r2_row']:.3f} (r={st['corr_row']:+.3f}) | "
           f"R^2 ExG = {st['r2_exg']:.3f} (r={st['corr_exg']:+.3f}) | R^2 both = {st['r2_both']:.3f}")
     print(f"     row given ExG = {st['r2_row_given_exg']:.3f} | "

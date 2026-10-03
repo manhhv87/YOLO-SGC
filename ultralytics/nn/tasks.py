@@ -70,24 +70,18 @@ from ultralytics.nn.modules import (
     YOLOEDetect,
     YOLOESegment,
     v10Detect,
-    DSPF, 
-    L_FPN,
-    LFPNSplit,
     AMRF,
     ScaleMapHead,
     ScaleMapDown,
     SGCBlock,
-    SGCBlockLite,
-    SGCBlock_NoScale,       # ← THÊM
-    SGCBlock_NoAMRF,        # ← THÊM
-    SGCBlock_EqualWeight,   # ← THÊM
-    SGCBlock_Minimal,       # ← THÊM
-    SGCBlock_YPrior,        # ← THÊM (F-03)
-    SGCBlock_SGate,         # added: fixes the inert prior
-    SGCBlock_SFiLM,         # added: fixes the inert prior
-    SGCBlock_ShufPrior,     # added: Phase B control
-    SGCBlock_YPriorDeploy,  # ← THÊM (Phase C deploy)
-    SGCBlock_Deploy,        # ← THÊM (Phase C deploy)
+    SGCBlock_NoScale,
+    SGCBlock_NoAMRF,
+    SGCBlock_EqualWeight,
+    SGCBlock_Minimal,
+    SGCBlock_YPrior,
+    SGCBlock_ShufPrior,
+    SGCBlock_YPriorDeploy,
+    SGCBlock_Deploy,
 )
 from ultralytics.nn.modules.block import BiFPN_Concat2, BiFPN_Concat3, ASFF2, ASFF3
 
@@ -1816,7 +1810,6 @@ def parse_model(d, ch, verbose=True):
         )
     ch = [ch]
     layers, save, c2 = [], [], ch[-1]  # layers, savelist, ch out
-    lfpn_ch = {}  # map: layer_index (L_FPN) -> list channel [C2, C3, C4, C5]
 
     base_modules = frozenset(
         {
@@ -1856,22 +1849,18 @@ def parse_model(d, ch, verbose=True):
             SCDown,
             C2fCIB,
             A2C2f,
-            DSPF,
             AMRF,
             ScaleMapHead,
             ScaleMapDown,
             SGCBlock,
-            SGCBlockLite,
-            SGCBlock_NoScale,       # ← THÊM
-            SGCBlock_NoAMRF,        # ← THÊM
-            SGCBlock_EqualWeight,   # ← THÊM
-            SGCBlock_Minimal,       # ← THÊM
-            SGCBlock_YPrior,        # ← THÊM (F-03)
-    SGCBlock_SGate,         # added: fixes the inert prior
-    SGCBlock_SFiLM,         # added: fixes the inert prior
-    SGCBlock_ShufPrior,     # added: Phase B control
-    SGCBlock_YPriorDeploy,  # ← THÊM (Phase C deploy)
-    SGCBlock_Deploy,        # ← THÊM (Phase C deploy)
+            SGCBlock_NoScale,
+            SGCBlock_NoAMRF,
+            SGCBlock_EqualWeight,
+            SGCBlock_Minimal,
+            SGCBlock_YPrior,
+            SGCBlock_ShufPrior,
+            SGCBlock_YPriorDeploy,
+            SGCBlock_Deploy,
         }
     )
     repeat_modules = frozenset(  # modules with 'repeat' arguments
@@ -1959,47 +1948,6 @@ def parse_model(d, ch, verbose=True):
             args = [ch[f]]
         elif m in (Concat, BiFPN_Concat2, BiFPN_Concat3):
             c2 = sum(ch[x] for x in f)
-        elif m is L_FPN:
-            # L_FPN: `from` must be a list of four features [P2, P3, P4, P5]
-            if not isinstance(f, (list, tuple)) or len(f) != 4:
-                raise ValueError(f"L_FPN expects from=[idx_P2, idx_P3, idx_P4, idx_P5], but got f={f}")
-
-            # input channels for P2, P3, P4, P5
-            ch_in = [ch[x] for x in f]
-            # L_FPN(ch_in)
-            args = [ch_in]
-
-            # stored for the LFPNSplit layers to use
-            lfpn_ch[i] = ch_in
-
-            # to keep parsing, set c2 to the P5 channel count; later layers do not use ch[i] directly
-            c2 = ch_in[-1]
-        elif m is LFPNSplit:
-            # `from` must point at exactly one L_FPN layer
-            if isinstance(f, (list, tuple)):
-                if len(f) != 1:
-                    raise ValueError(f"LFPNSplit expects from single L_FPN layer, got f={f}")
-                f0 = f[0]
-            else:
-                f0 = f
-
-            if f0 not in lfpn_ch:
-                raise KeyError(f"LFPNSplit: from={f0} is not an L_FPN layer or L_FPN not parsed yet.")
-
-            # args[0] is the branch index (0: P2, 1: P3, 2: P4, 3: P5)
-            branch_idx = int(args[0])
-            ch_list = lfpn_ch[f0]
-
-            if branch_idx < 0 or branch_idx >= len(ch_list):
-                raise IndexError(
-                    f"LFPNSplit idx={branch_idx} out of range for L_FPN with {len(ch_list)} branches"
-                )
-
-            # output channel count of this branch
-            c2 = ch_list[branch_idx]
-
-            # LFPNSplit ch? nh?n idx
-            args = [branch_idx]  
         elif m in frozenset(
             {
                 Detect,
@@ -2031,7 +1979,7 @@ def parse_model(d, ch, verbose=True):
             c1 = ch[f]
             args = [*args[1:]]
         elif m in (ASFF2, ASFF3):
-            c1 = ch[f[0]]                                   # cac dau vao cung so kenh
+            c1 = ch[f[0]]                                   # all inputs have the same channel count
             c2 = args[0]
             c2 = make_divisible(min(c2, max_channels) * width, 8)
             args = [c1, c2, *args[1:]]

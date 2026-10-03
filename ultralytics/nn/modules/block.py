@@ -53,22 +53,15 @@ __all__ = (
     "PSA",
     "SCDown",
     "TorchVision",
-    "DSPF",
-    "DySample",
-    "L_FPN",
-    "LFPNSplit",
     "AMRF",
     "ScaleMapHead",
     "ScaleMapDown",
     "SGCBlock",
-    "SGCBlockLite",
     "SGCBlock_Minimal",
     "SGCBlock_EqualWeight",
     "SGCBlock_NoAMRF",
     "SGCBlock_NoScale",
     "SGCBlock_YPrior",
-    "SGCBlock_SGate",
-    "SGCBlock_SFiLM",
     "SGCBlock_ShufPrior",
     "SGCBlock_YPriorDeploy",
     "SGCBlock_Deploy",
@@ -2332,233 +2325,6 @@ class SAVPE(nn.Module):
         return F.normalize(aggregated.transpose(-2, -3).reshape(B, Q, -1), dim=-1, p=2)
 
 
-# DSPF: Deep Spatial Pyramid Fusion module
-class DSPF(nn.Module):
-    def __init__(self, in_channels, out_channels=None, dilation_rates=(1, 2, 3)):
-        """
-        DSPF module: replaces a residual block by using depthwise (per-channel)
-        convolutions with different dilation rates.
-
-        - in_channels: number of input channels.
-        - out_channels: number of output channels. If None, defaults to in_channels.
-        - dilation_rates: dilation values for depthwise convolutions (default: (1, 2, 3)).
-        """
-        super(DSPF, self).__init__()
-        # If out_channels is not specified, use in_channels by default
-        if out_channels is None:
-            out_channels = in_channels
-        self.in_channels = in_channels
-        self.out_channels = out_channels
-
-        # Build a sequence of depthwise convolutions with different dilations
-        layers = []
-        for d in dilation_rates:
-            # Use 3x3 kernel, groups = in_channels (depthwise conv), with proper padding
-            pad = d
-            layers.append(
-                nn.Conv2d(
-                    in_channels,
-                    in_channels,
-                    kernel_size=3,
-                    stride=1,
-                    padding=pad,
-                    dilation=d,
-                    groups=in_channels,
-                    bias=False,
-                )
-            )
-            layers.append(nn.BatchNorm2d(in_channels))
-            layers.append(nn.SiLU(inplace=True))
-        self.dw_conv_sequence = nn.Sequential(*layers)
-
-        # 1x1 conv to fuse channels after concatenation with the original input.
-        # After the depthwise conv sequence, we concatenate output with input:
-        # channels = in_channels * 2. Then we reduce to out_channels.
-        self.conv_fuse = nn.Conv2d(
-            in_channels * 2, out_channels, kernel_size=1, stride=1, padding=0, bias=False
-        )
-        self.bn_fuse = nn.BatchNorm2d(out_channels)
-        self.act_fuse = nn.SiLU(inplace=True)
-
-    def forward(self, x):
-        """
-        Forward pass of DSPF:
-        - Input x: [N, in_channels, H, W]
-        - Output: [N, out_channels, H, W] with multi-scale spatial fusion.
-        """
-        identity = x
-        out = self.dw_conv_sequence(x)        # depthwise convs with different dilations
-        out = torch.cat([out, identity], 1)   # concatenate along channel dimension
-        out = self.conv_fuse(out)
-        out = self.bn_fuse(out)
-        out = self.act_fuse(out)
-        return out
-
-
-class DySample(nn.Module):
-    """
-    DySample: lightweight, content-aware dynamic upsampling module.
-    """
-
-    def __init__(self, in_channels, scale_factor=2):
-        """
-        Dynamic upsampling operator (content-aware sampling).
-
-        - in_channels: number of channels in the input feature map.
-        - scale_factor: upsampling factor (e.g., 2).
-        """
-        super(DySample, self).__init__()
-        self.scale = scale_factor
-        # 1x1 conv to generate offsets: output channels = 2 * (scale^2)
-        # 2 channels per location (x and y offsets).
-        self.conv_offset = nn.Conv2d(
-            in_channels,
-            2 * (self.scale ** 2),
-            kernel_size=1,
-            stride=1,
-            padding=0,
-        )
-        # Mark this conv as not prunable
-        self.conv_offset.no_prune = True
-        # PixelShuffle to reshape [N, 2*(r^2), H, W] -> [N, 2, H*r, W*r]
-        self.pixel_shuffle = nn.PixelShuffle(self.scale)
-        self.activation = nn.Sigmoid()
-
-    def forward(self, x):
-        """
-        Forward pass of DySample:
-        - x: [N, C, H, W]
-        - Output: [N, C, H * scale, W * scale]
-        """
-        N, C, H, W = x.shape
-        r = self.scale
-
-        offset = self.conv_offset(x)            # [N, 2*(r^2), H, W]
-        offset = self.pixel_shuffle(offset)     # [N, 2, H*r, W*r]
-        offset = self.activation(offset) * r    # [N, 2, H_out, W_out]
-
-        H_out, W_out = H * r, W * r
-
-        # Build base sampling grid in normalized coordinates [-1, 1]
-        if H_out == 1:
-            y_norm = torch.tensor([-1.0], device=x.device, dtype=x.dtype)
-        else:
-            y = torch.linspace(0, H - 1, steps=H_out, device=x.device, dtype=x.dtype)
-            y_norm = (y / (H - 1)) * 2 - 1
-
-        if W_out == 1:
-            x_norm = torch.tensor([-1.0], device=x.device, dtype=x.dtype)
-        else:
-            x_lin = torch.linspace(0, W - 1, steps=W_out, device=x.device, dtype=x.dtype)
-            x_norm = (x_lin / (W - 1)) * 2 - 1
-
-        Y_grid, X_grid = torch.meshgrid(y_norm, x_norm, indexing="ij")
-        base_grid = torch.stack((X_grid, Y_grid), dim=-1)      # [H_out, W_out, 2]
-        base_grid = base_grid.expand(N, H_out, W_out, 2)       # [N, H_out, W_out, 2]
-
-        offset_x = offset[:, 0, :, :]  # [N, H_out, W_out]
-        offset_y = offset[:, 1, :, :]  # [N, H_out, W_out]
-
-        if W > 1:
-            offset_x_norm = (offset_x / (W - 1)) * 2
-        else:
-            offset_x_norm = torch.zeros_like(offset_x)
-
-        if H > 1:
-            offset_y_norm = (offset_y / (H - 1)) * 2
-        else:
-            offset_y_norm = torch.zeros_like(offset_y)
-
-        offset_grid = torch.stack((offset_x_norm, offset_y_norm), dim=-1)  # [N, H_out, W_out, 2]
-        sampling_grid = base_grid + offset_grid
-
-        out = F.grid_sample(
-            x,
-            sampling_grid,
-            mode="bilinear",
-            padding_mode="zeros",
-            align_corners=True,
-        )
-        return out
-
-
-class L_FPN(nn.Module):
-    """
-    L-FPN: Light Feature Pyramid Network integrating DAFF and DEI.
-    """
-
-    def __init__(self, ch_in):
-        """
-        - ch_in: list of channels from backbone for P2, P3, P4, P5 (in order),
-          e.g., ch_in = [C2, C3, C4, C5].
-        """
-        super(L_FPN, self).__init__()
-        C2, C3, C4, C5 = ch_in
-
-        # P5 -> P4 path
-        self.conv5_to_4 = nn.Conv2d(C5, C4, kernel_size=1, stride=1, padding=0, bias=True)
-        self.upsample5_to_4 = DySample(in_channels=C4, scale_factor=2)
-        self.dspf_P4 = DSPF(in_channels=C4 * 2, out_channels=C4)
-
-        # P4 -> P3 path
-        self.conv4_to_3 = nn.Conv2d(C4, C3, kernel_size=1, stride=1, padding=0, bias=True)
-        self.upsample4_to_3 = DySample(in_channels=C3, scale_factor=2)
-        self.dspf_P3 = DSPF(in_channels=C3 * 2, out_channels=C3)
-
-        # P3 -> P2 path
-        self.conv3_to_2 = nn.Conv2d(C3, C2, kernel_size=1, stride=1, padding=0, bias=True)
-        self.upsample3_to_2 = DySample(in_channels=C2, scale_factor=2)
-        self.dspf_P2 = DSPF(in_channels=C2 * 2, out_channels=C2)
-
-        # Optional processing for P5 (identity here)
-        self.out_P5_conv = nn.Identity()
-
-    def forward(self, x):
-        """
-        - x: [P2, P3, P4, P5] from the backbone.
-        - returns: (P2_out, P3_out, P4_out, P5_out)
-        """
-        P2, P3, P4, P5 = x
-
-        # Stage 1: P5 + P4
-        P5_to_P4 = self.conv5_to_4(P5)
-        P5_up = self.upsample5_to_4(P5_to_P4)
-        P4_cat = torch.cat([P5_up, P4], dim=1)
-        P4_out = self.dspf_P4(P4_cat)
-
-        # Stage 2: P4_out + P3
-        P4_to_P3 = self.conv4_to_3(P4_out)
-        P4_up = self.upsample4_to_3(P4_to_P3)
-        P3_cat = torch.cat([P4_up, P3], dim=1)
-        P3_out = self.dspf_P3(P3_cat)
-
-        # Stage 3: P3_out + P2
-        P3_to_P2 = self.conv3_to_2(P3_out)
-        P3_up = self.upsample3_to_2(P3_to_P2)
-        P2_cat = torch.cat([P3_up, P2], dim=1)
-        P2_out = self.dspf_P2(P2_cat)
-
-        P5_out = self.out_P5_conv(P5)
-
-        return P2_out, P3_out, P4_out, P5_out
-
-
-class LFPNSplit(nn.Module):
-    """
-    LFPNSplit: select a single branch (P2, P3, P4 or P5) from L_FPN output.
-
-    - x: tuple/list (P2_out, P3_out, P4_out, P5_out)
-    - idx: index of the branch to select (0: P2, 1: P3, 2: P4, 3: P5)
-    """
-
-    def __init__(self, idx: int):
-        super().__init__()
-        self.idx = int(idx)
-
-    def forward(self, x):
-        return x[self.idx]
-
-
 class AMRF(nn.Module):
     """
     Adaptive Multi-Receptive-Field block.
@@ -2633,7 +2399,7 @@ class ScaleMapHead(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.conv1(x)
         x = self.conv2(x)
-        s2 = self.conv_out(x)  # (B, c2, H, W) – typically c2 = 1
+        s2 = self.conv_out(x)  # (B, c2, H, W), typically c2 = 1
         return s2
 
 
@@ -2656,7 +2422,7 @@ class ScaleMapDown(nn.Module):
 
 class SGCBlock(nn.Module):
     """
-    Scale-Guided Context fusion block v2.
+    Scale-Guided Context fusion block.
 
     Input: x shape (B, 3*C + 1, H, W):
         - C channels: feature level 1
@@ -2676,7 +2442,6 @@ class SGCBlock(nn.Module):
         self.amrf3 = AMRF(c2, c2)
 
         # learnable weights for 3 branches conditioned on (f1, f2, f3, S)
-        # self.weight_conv = nn.Conv2d(3 * c2 + 1, 3, kernel_size=1, stride=1, padding=0)
         self.weight_conv = nn.Conv2d(c1, 3, kernel_size=1, stride=1, padding=0)
         self.refine = Conv(c2, c2, 3, 1)
 
@@ -2707,47 +2472,8 @@ class SGCBlock(nn.Module):
         return self.refine(fused)
 
 
-class SGCBlockLite(nn.Module):
-    def __init__(self, c1: int, c2: int):
-        super().__init__()
-        self.c = c2
-
-        # one shared AMRF for the three branches
-        self.amrf = AMRF(c2, c2)
-
-        # self.weight_conv = nn.Conv2d(3 * c2 + 1, 3, kernel_size=1, stride=1, padding=0)
-        self.weight_conv = nn.Conv2d(c1, 3, kernel_size=1, stride=1, padding=0)
-        self.refine = Conv(c2, c2, 3, 1)
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # accepts a list/tuple [f1, f2, f3, S]
-        if isinstance(x, (list, tuple)):
-            f1, f2, f3, S = x
-        else:
-            # fallback for the older concatenated input form
-            b, ch, h, w = x.shape
-            assert (ch - 1) % 3 == 0, f"SGCBlock expects 3*C+1 channels, got {ch}"
-            C = self.c
-            f1 = x[:, 0:C]
-            f2 = x[:, C:2*C]
-            f3 = x[:, 2*C:3*C]
-            S  = x[:, 3*C:3*C+1]
-
-        f1 = self.amrf(f1)
-        f2 = self.amrf(f2)
-        f3 = self.amrf(f3)
-
-        f_cat = torch.cat([f1, f2, f3, S], dim=1)
-        w = self.weight_conv(f_cat)
-        w = torch.softmax(w, dim=1)
-
-        w1, w2, w3 = w[:, 0:1], w[:, 1:2], w[:, 2:3]
-        fused = f1 * w1 + f2 * w2 + f3 * w3
-        return self.refine(fused)
-
-
 # ================================================================
-# A. SGCBlock_NoScale — no ScaleMap guidance
+# SGCBlock_NoScale: no ScaleMap guidance
 # ================================================================
 # AMRF and adaptive weights are kept
 # but the scale map is zeroed, so the weights receive no scale prior
@@ -2787,7 +2513,7 @@ class SGCBlock_NoScale(nn.Module):
  
  
 # ================================================================
-# B. SGCBlock_NoAMRF — AMRF replaced by a plain 3x3 conv
+# SGCBlock_NoAMRF: AMRF replaced by a plain 3x3 conv
 # ================================================================
 # ScaleMap and adaptive weights are kept
 # AMRF (three depthwise branches plus attention) becomes a plain 3x3 conv
@@ -2825,7 +2551,7 @@ class SGCBlock_NoAMRF(nn.Module):
  
  
 # ================================================================
-# C. SGCBlock_EqualWeight — fixed weights of 1/3
+# SGCBlock_EqualWeight: fixed weights of 1/3
 # ================================================================
 # AMRF and ScaleMap remain present but have no effect
 # weight_conv is removed; a plain average replaces adaptive fusion
@@ -2858,10 +2584,10 @@ class SGCBlock_EqualWeight(nn.Module):
  
  
 # ================================================================
-# D. SGCBlock_Minimal — neither ScaleMap nor AMRF
+# SGCBlock_Minimal: neither ScaleMap nor AMRF
 # ================================================================
 # only three conv branches plus adaptive weighting, with no scale guidance
-# the minimal fusion baseline, showing that both AMRF and ScaleMap are needed
+# the minimal fusion baseline
  
 class SGCBlock_Minimal(nn.Module):
     def __init__(self, c1: int, c2: int):
@@ -2897,7 +2623,7 @@ class SGCBlock_Minimal(nn.Module):
 
 # ============================ BiFPN ============================
 class BiFPN_Concat2(nn.Module):
-    """Weighted concat cua 2 dau vao (fast-normalized fusion, Tan et al. 2020)."""
+    """Weighted concatenation of two inputs (fast normalized fusion, Tan et al. 2020)."""
     def __init__(self, dimension=1):
         super().__init__()
         self.d = dimension
@@ -2911,7 +2637,7 @@ class BiFPN_Concat2(nn.Module):
 
 
 class BiFPN_Concat3(nn.Module):
-    """Weighted concat cua 3 dau vao."""
+    """Weighted concatenation of three inputs."""
     def __init__(self, dimension=1):
         super().__init__()
         self.d = dimension
@@ -2926,7 +2652,7 @@ class BiFPN_Concat3(nn.Module):
 
 # ============================ AFPN (ASFF core) ============================
 class ASFF2(nn.Module):
-    """Adaptively Spatial Feature Fusion cua 2 muc DA CAN CHINH (cung C, cung HxW)."""
+    """Adaptively spatial feature fusion of two aligned levels (same channels and size)."""
     def __init__(self, c1, c2, inter=16):
         super().__init__()
         self.compress = nn.ModuleList([Conv(c1, inter, 1, 1) for _ in range(2)])
@@ -2942,7 +2668,7 @@ class ASFF2(nn.Module):
 
 
 class ASFF3(nn.Module):
-    """Adaptively Spatial Feature Fusion cua 3 muc DA CAN CHINH (cung C, cung HxW)."""
+    """Adaptively spatial feature fusion of three aligned levels (same channels and size)."""
     def __init__(self, c1, c2, inter=16):
         super().__init__()
         self.compress = nn.ModuleList([Conv(c1, inter, 1, 1) for _ in range(3)])
@@ -2957,10 +2683,9 @@ class ASFF3(nn.Module):
         return self.out(fused)
 
 # ================================================================
-# E. SGCBlock_YPrior — ABLATION (review F-03): thay ScaleMap HOC DUOC
-# bang prior hinh hoc CO DINH: kenh gradient toa do y tuyen tinh 0->1
-# (0 tham so). Giu nguyen AMRF + adaptive weights. ScaleMapHead van
-# nam trong graph (nhu cac ablation khac) nhung dau ra S bi bo qua.
+# SGCBlock_YPrior: the learned scale map is replaced by a fixed vertical ramp
+# from 0 at the top to 1 at the bottom (no parameters). AMRF and the adaptive
+# weights are kept; ScaleMapHead stays in the graph but its output is ignored.
 # ================================================================
 
 class SGCBlock_YPrior(nn.Module):
@@ -2985,7 +2710,7 @@ class SGCBlock_YPrior(nn.Module):
         f2 = self.amrf2(f2)
         f3 = self.amrf3(f3)
 
-        # === ABLATION: prior y-gradient co dinh thay cho S ===
+        # === ABLATION: fixed vertical ramp instead of S ===
         b, _, h, w = f1.shape
         yprior = torch.linspace(0.0, 1.0, h, device=f1.device, dtype=f1.dtype)
         yprior = yprior.view(1, 1, h, 1).expand(b, 1, h, w)
@@ -2997,91 +2722,10 @@ class SGCBlock_YPrior(nn.Module):
 
 
 # ================================================================
-# F. SGCBlock_SGate / SGCBlock_SFiLM — SUA LOI "prior tro" (2026-08-05)
-# Chan doan: trong SGCBlock goc, S chi la 1 trong 3C+1 = 193 kenh dau vao cua
-# mot conv 1x1 duy nhat, nen chi dong gop 0.3-1.6% bien thien khong gian cua
-# logits fusion => mo hinh da huan luyen bat bien voi noi dung scale map.
-# Sua: cho prior mot NHANH RIENG co chuan hoa (BN) truoc khi cong vao logits,
-# nen do lon cua no khong con bi 192 kenh dac trung nhan chim.
-# ================================================================
-
-class SGCBlock_SGate(nn.Module):
-    """SGCBlock voi prior di theo nhanh rieng (embed 1->k kenh, BN, SiLU) roi
-    cong thang vao logits fusion. Chi them ~120 tham so moi block."""
-
-    def __init__(self, c1: int, c2: int, k: int = 16):
-        super().__init__()
-        self.c = c2
-        self.amrf1 = AMRF(c2, c2)
-        self.amrf2 = AMRF(c2, c2)
-        self.amrf3 = AMRF(c2, c2)
-        self.weight_conv = nn.Conv2d(3 * c2, 3, kernel_size=1)          # nhanh dac trung
-        self.s_embed = nn.Sequential(nn.Conv2d(1, k, 1), nn.BatchNorm2d(k), nn.SiLU())
-        self.s_logit = nn.Conv2d(k, 3, kernel_size=1)                   # nhanh prior
-        self.refine = Conv(c2, c2, 3, 1)
-
-    def _split(self, x):
-        if isinstance(x, (list, tuple)):
-            return x
-        C = self.c
-        return x[:, 0:C], x[:, C:2 * C], x[:, 2 * C:3 * C], x[:, 3 * C:3 * C + 1]
-
-    def forward(self, x):
-        f1, f2, f3, S = self._split(x)
-        f1, f2, f3 = self.amrf1(f1), self.amrf2(f2), self.amrf3(f3)
-        z = self.weight_conv(torch.cat([f1, f2, f3], dim=1)) + self.s_logit(self.s_embed(S))
-        w = torch.softmax(z, dim=1)
-        fused = f1 * w[:, 0:1] + f2 * w[:, 1:2] + f3 * w[:, 2:3]
-        return self.refine(fused)
-
-
-class SGCBlock_SFiLM(nn.Module):
-    """Nhu SGCBlock_SGate, cong them dieu bien nhan (FiLM) tren tung nhanh:
-    f_i <- f_i * (1 + tanh(g_i(S))). Prior di vao ca duong dac trung nen khong
-    the bi bo qua luc suy luan."""
-
-    def __init__(self, c1: int, c2: int, k: int = 16):
-        super().__init__()
-        self.c = c2
-        self.amrf1 = AMRF(c2, c2)
-        self.amrf2 = AMRF(c2, c2)
-        self.amrf3 = AMRF(c2, c2)
-        self.weight_conv = nn.Conv2d(3 * c2, 3, kernel_size=1)
-        self.s_embed = nn.Sequential(nn.Conv2d(1, k, 1), nn.BatchNorm2d(k), nn.SiLU())
-        self.s_logit = nn.Conv2d(k, 3, kernel_size=1)
-        self.s_gain = nn.Conv2d(k, 3, kernel_size=1)
-        nn.init.zeros_(self.s_gain.weight)      # khoi tao gain = 0 -> ban dau khong doi gi
-        nn.init.zeros_(self.s_gain.bias)
-        self.refine = Conv(c2, c2, 3, 1)
-
-    def _split(self, x):
-        if isinstance(x, (list, tuple)):
-            return x
-        C = self.c
-        return x[:, 0:C], x[:, C:2 * C], x[:, 2 * C:3 * C], x[:, 3 * C:3 * C + 1]
-
-    def forward(self, x):
-        f1, f2, f3, S = self._split(x)
-        f1, f2, f3 = self.amrf1(f1), self.amrf2(f2), self.amrf3(f3)
-        s = self.s_embed(S)
-        g = torch.tanh(self.s_gain(s))
-        f1 = f1 * (1 + g[:, 0:1])
-        f2 = f2 * (1 + g[:, 1:2])
-        f3 = f3 * (1 + g[:, 2:3])
-        z = self.weight_conv(torch.cat([f1, f2, f3], dim=1)) + self.s_logit(s)
-        w = torch.softmax(z, dim=1)
-        fused = f1 * w[:, 0:1] + f2 * w[:, 1:2] + f3 * w[:, 2:3]
-        return self.refine(fused)
-
-
-# ================================================================
-# G. SGCBlock_ShufPrior — DOI CHUNG then chot (PROTOCOL-scalemap.md, Phase B)
-# Hoan vi NGAU NHIEN scale map theo khong gian truoc khi dua vao weight_conv.
-# Phep hoan vi la gather => KHA VI, nen gradient van chay ve ScaleMapHead va C2
-# y het nhanh Full; chi co TUONG UNG KHONG GIAN giua prior va anh bi pha huy.
-#   Full   > NoScale va Full   > ShufPrior  -> noi dung khong gian co ich (H1)
-#   Full   > NoScale va Full ~= ShufPrior   -> chi duong gradient co ich (H2)
-# Luc eval dung hoan vi CO DINH (seed 1234) de ket qua tai lap duoc.
+# SGCBlock_ShufPrior: the scale map is permuted at random over space before
+# weight_conv. The permutation is a gather, so gradients still reach ScaleMapHead;
+# only the spatial correspondence between prior and image is removed.
+# A fixed permutation (seed 1234) is used at evaluation.
 # ================================================================
 
 class SGCBlock_ShufPrior(nn.Module):
@@ -3113,7 +2757,7 @@ class SGCBlock_ShufPrior(nn.Module):
 
         b, c, h, w = S.shape
         idx = self._perm(h * w, S.device)
-        S_shuf = S.flatten(2)[:, :, idx].view(b, c, h, w)     # gather -> van co gradient
+        S_shuf = S.flatten(2)[:, :, idx].view(b, c, h, w)     # gather, so gradients still flow
 
         wgt = torch.softmax(self.weight_conv(torch.cat([f1, f2, f3, S_shuf], dim=1)), dim=1)
         fused = f1 * wgt[:, 0:1] + f2 * wgt[:, 1:2] + f3 * wgt[:, 2:3]
@@ -3121,16 +2765,15 @@ class SGCBlock_ShufPrior(nn.Module):
 
 
 # ================================================================
-# H. Bien the DEPLOY (PROTOCOL-scalemap.md, Phase C)
-# Gate 1 ket luan: prior doc co dinh (YPrior) ngang bang map hoc duoc, va CA HAI
-# deu tro luc suy luan. Vay ScaleMapHead la tinh toan chet (55.5K tham so,
-# 2.85 GFLOPs) -> bo hai khoi do thi. Hai module duoi nhan 3 dau vao (khong con S).
-#   SGCBlock_YPriorDeploy : tu sinh ramp doc -> chuyen trong so tu YPrior la DONG NHAT
-#   SGCBlock_Deploy       : bo han kenh prior -> chuyen tu Full phai cat cot cuoi weight_conv
+# Deployment variants: the prior branch is removed after training, so these blocks
+# take three inputs (no scale map).
+#   SGCBlock_YPriorDeploy: generates the vertical ramp itself; YPrior weights transfer unchanged.
+#   SGCBlock_Deploy: no prior channel; Full weights transfer after removing the last input
+#   column of weight_conv (equivalent to S = 0).
 # ================================================================
 
 class SGCBlock_YPriorDeploy(nn.Module):
-    """Y het SGCBlock_YPrior nhung khong nhan dau vao S (ramp sinh tai cho)."""
+    """As SGCBlock_YPrior, without the scale-map input (the ramp is generated here)."""
 
     def __init__(self, c1: int, c2: int):
         super().__init__()
@@ -3153,7 +2796,7 @@ class SGCBlock_YPriorDeploy(nn.Module):
 
 
 class SGCBlock_Deploy(nn.Module):
-    """SGCBlock bo han kenh prior (tuong duong toan hoc voi viec dat S = 0)."""
+    """SGCBlock without the prior channel (equivalent to setting S = 0)."""
 
     def __init__(self, c1: int, c2: int):
         super().__init__()

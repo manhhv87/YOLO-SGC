@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
-"""make_fig_dataset.py — crop-row dataset samples with their ground-truth labels.
+"""make_fig_dataset.py - figure with dataset samples and their ground-truth labels.
 
-Four images from two recording sessions, spanning the illumination and vegetation-density
-range of the set, each drawn with all four ground-truth distance-band boxes.
+Four images from two recording sessions, covering the range of illumination and vegetation
+density, each drawn with its four distance-band boxes. The bands use shades of one hue whose
+lightness changes steadily from near to far, so the order also reads in greyscale.
 
-The palette is a single-hue ordinal scale (muted blue, well separated from soil brown and
-foliage green) with monotone lightness from near to far, so the order survives greyscale
-printing. Checked: adjacent dE 20.2 (normal vision), 19.3/19.6 (protan/deutan), greyscale
-luminance gap >= 0.068. Strokes carry a dark outline so they stand out on any background.
+    python make_fig_dataset.py --list images.txt     # -> figures/dataset_samples.pdf
 
-    python make_fig_dataset.py                       # -> figures/dataset_samples.pdf
-    python make_fig_dataset.py --list /tmp/pick.txt  # use a different image list
+images.txt lists the four images, one path per line.
 """
 import argparse
 import os
@@ -35,7 +32,7 @@ BANDS = [("near", "#00E0FF"), ("mid_near", "#FFEA00"),
 CLS = ["near", "mid_near", "mid_far", "far"]
 
 ap = argparse.ArgumentParser()
-ap.add_argument("--list", default="/tmp/pick.txt", help="file holding four image paths")
+ap.add_argument("--list", default="images.txt", help="file listing the four images, one path per line")
 ap.add_argument("--out", default="figures/dataset_samples.pdf")
 ap.add_argument("--lw", type=float, default=1.5, help="box line width")
 args = ap.parse_args()

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-"""make_deploy_pruned.py — remove the ScaleMap branch from an already pruned model.
+"""make_deploy_pruned.py - remove the ScaleMap branch from a pruned model.
 
-Rebuilding from the yaml is not possible: pruning removes channels unevenly, so the
-original yaml no longer describes the channel counts. The loaded graph is edited directly:
-  1. drop the ScaleMapHead / ScaleMapDown layers from the nn.Sequential;
-  2. renumber .i and rewrite the .f references of every remaining layer;
-  3. for each SGCBlock, switch the class to SGCBlock_Deploy (same submodules) and cut the
-     prior channel columns from weight_conv, equivalent to setting S = 0;
-  4. recompute the .save list of layers whose outputs must be kept.
+A pruned model cannot be rebuilt from its yaml, because pruning changes the channel counts
+unevenly, so the loaded graph is edited directly:
+  1. drop the ScaleMapHead and ScaleMapDown layers from the nn.Sequential;
+  2. renumber .i and rewrite the .f references of the remaining layers;
+  3. switch each SGCBlock to SGCBlock_Deploy (same submodules) and cut the prior columns of
+     weight_conv, which is equivalent to setting S = 0;
+  4. recompute the .save list.
 
     python make_deploy_pruned.py --src weights/prune/yolov8s_sgc_p345/best.pt \
         --out weights/deploy/pruned_yolov8s_sgc_p345_deploy.pt

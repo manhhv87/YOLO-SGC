@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-"""bench_fps_one.py — measure FPS for exactly one model in a clean process, printing JSON.
+"""bench_fps_one.py - GPU throughput of one model in a fresh process; prints the result as JSON.
 
-Used with bench_fps_all.sh: one process per model, so no memory fragmentation accumulates
-across models. Diagnosis: loading and freeing 32 models in one process cost 2.07% of
-throughput, whereas repeating the same model drifted only 0.1%.
-
-Protocol: batch 1, FP32, 640, fused, GPU warmed, 100 warm-up plus 1000 timed iterations, CUDA events.
+Batch 1, FP32, 640x640, fused model, GPU warmed up, 100 warm-up and 1000 timed iterations,
+timed with CUDA events. Running each model in its own process keeps the memory state of one
+model from affecting the next.
 """
 import argparse, json, os, statistics, subprocess, sys
 

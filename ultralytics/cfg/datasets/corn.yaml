@@ -1,0 +1,12 @@
+# Crop-row dataset with four distance bands. Set `path` to the dataset root.
+path: datasets
+train: train/images
+val: valid/images
+test: test/images
+
+nc: 4
+names:
+  0: near
+  1: mid_near
+  2: mid_far
+  3: far

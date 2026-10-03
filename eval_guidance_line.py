@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
-"""eval_guidance_line.py — compare guidance-line quality across pipelines.
+"""eval_guidance_line.py - guidance-line quality of three pipelines.
 
-Each corn image shows one lane ahead of the robot with four boxes (near..far); the box
-centroids define the guidance line. The ground-truth line is the fit x=m*y+b through the
-four ground-truth centroids. Three methods are compared on the same test set:
-  (1) Classical  — classical crop-row detector (Excess-Green plus soil-corridor tracking,
-                   no learning); (2) YOLOv8s baseline; (3) YOLOv8s-SGC-P345, proposed.
-Metrics follow the crop-row convention of Gong et al. (2024): angular error in degrees
-against ground truth; lateral offset at the far band, normalised by image width; and the
-
-rate at which a line is recovered.
+Each test image shows one lane ahead of the robot with four boxes (near to far); the box
+centroids define the guidance line, and the ground-truth line is the fit x = m*y + b through the
+four labelled centroids. Compared on the same test set:
+  (1) a classical crop-row detector (Excess-Green index and soil-corridor tracking, no learning);
+  (2) YOLOv8s; (3) YOLOv8s-SGC-P345.
+Metrics follow Gong et al. (2024): angular error against the ground truth in degrees, lateral
+offset at the far band normalised by image width, and the rate at which a line is recovered.
 
 Usage: python eval_guidance_line.py --split test --device 0
 """
@@ -133,17 +131,17 @@ def main():
 
     def stat(v):
         v = np.array(v); return v.mean(), np.median(v), v.std()
-    lines = ["# Guidance-line comparison (F-05 / F-06)  —  test set, N=%d images" % N,
+    lines = ["# Guidance-line comparison, test set, N=%d images" % N,
              "",
-             "GT line = least-squares fit through the 4 GT box centroids (near→far). "
-             "Angular error = |angle(pred) − angle(GT)| in degrees (angle w.r.t. image vertical). "
-             "Far offset = |x_pred − x_GT| at the far-band row, normalized by image width. "
+             "GT line = least-squares fit through the 4 GT box centroids (near to far). "
+             "Angular error = |angle(pred) - angle(GT)| in degrees (angle w.r.t. image vertical). "
+             "Far offset = |x_pred - x_GT| at the far-band row, normalized by image width. "
              "Line rate = fraction of images where a valid guidance line was extracted.", "",
-             "| Method | Angular err (°) mean / median | Far offset (norm.) mean | Line rate |",
+             "| Method | Angular err (deg) mean / median | Far offset (norm.) mean | Line rate |",
              "|---|---|---|---|"]
     for name, d in rows.items():
         if not d["ang"]:
-            lines.append(f"| {name} | — | — | 0 |"); continue
+            lines.append(f"| {name} | - | - | 0 |"); continue
         am, amed, asd = stat(d["ang"]); fm, fmed, fsd = stat(d["far"])
         lines.append(f"| {name} | {am:.2f} / {amed:.2f} | {fm:.3f} | {d['ok']/N:.2f} |")
     # completeness: in how many images the detector recovers all four bands

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""profile_latency.py — why can fewer parameters and fewer GFLOPs still run slower?
+"""profile_latency.py - per-layer GPU latency of two models.
 
-Times each top-level layer (model.model[i]) with CUDA events, groups them by module type,
-and compares against the FLOPs of that layer to give an arithmetic intensity in FLOPs per
-millisecond. A layer with much time but few FLOPs is the one bound by memory bandwidth.
+Times each top-level layer (model.model[i]) with CUDA events, groups the times by module type
+and divides the FLOPs of each layer by its time. A layer with a long time and few FLOPs is
+limited by memory bandwidth rather than by arithmetic.
 
     python profile_latency.py --a weights/main/yolov5s/best.pt --b weights/main/yolov5s_sgc_p345/best.pt
 """
@@ -83,7 +83,7 @@ def main():
             if v / r["total_ms"] > 0.02:
                 print(f"    {k:22s} {v:7.3f} ms  {100*v/r['total_ms']:5.1f}%")
     a, b = out["A"], out["B"]
-    print(f"\n=== SO SÁNH ===")
+    print(f"\n=== comparison ===")
     print(f"  params   {a['params']:.2f} -> {b['params']:.2f} M  ({100*(b['params']-a['params'])/a['params']:+.1f}%)")
     print(f"  GFLOPs   {a['gflops']:.1f} -> {b['gflops']:.1f}      ({100*(b['gflops']-a['gflops'])/a['gflops']:+.1f}%)")
     print(f"  time     {a['total_ms']:7.3f} -> {b['total_ms']:.3f} ms ({100*(b['total_ms']-a['total_ms'])/a['total_ms']:+.1f}%)")

@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-"""make_deploy_generic.py — build the deployment variant (ScaleMap branch removed) for any backbone.
+"""make_deploy_generic.py - build the deployment variant (ScaleMap branch removed) for any backbone.
 
-The four backbones have different layer maps (v5s/v8s: ScaleMap at 12-14, two SGCBlocks;
-v11s: 13-15; v9s: 20-21 with a single SGCBlock), so a hard-coded index table will not do.
+The backbones place the ScaleMap layers differently (v5s/v8s: layers 12-14 and two SGCBlocks;
+v11s: 13-15; v9s: 20-21 and one SGCBlock), so the layer indices are read from the model.
 
-Procedure:
-  1. drop every ScaleMapHead / ScaleMapDown layer;
+Steps:
+  1. drop every ScaleMapHead and ScaleMapDown layer;
   2. renumber the remaining layers and rewrite every 'from' reference;
-  3. swap SGCBlock -> SGCBlock_Deploy and drop the scale map from its input list;
-  4. port the weights: rename keys to the new indices and cut the trailing columns of
-     weight_conv, which is mathematically equivalent to setting S = 0.
+  3. replace SGCBlock by SGCBlock_Deploy and drop the scale map from its inputs;
+  4. port the weights: rename the keys to the new indices and cut the trailing columns of
+     weight_conv, which is equivalent to setting S = 0.
 
     python make_deploy_generic.py --src weights/main/yolov5s_sgc_p345/best.pt \
         --out weights/deploy/yolov5s_sgc_p345_deploy --name yolov5s_sgc_p345_deploy

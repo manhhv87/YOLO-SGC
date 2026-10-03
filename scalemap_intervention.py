@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
-"""scalemap_intervention.py — causal intervention experiment on the ScaleMap.
+"""scalemap_intervention.py - inference-time interventions on the scale map.
 
-Overwrites the ScaleMapHead output at inference (a single intervention point, since
-ScaleMapDown only pools this map for P3/P4), then measures per-distance-band AP on the
-test set. Weights are NOT retrained.
+The ScaleMapHead output is overwritten at inference (one intervention point, since ScaleMapDown
+only pools this map for P3 and P4), and per-band AP is measured on the test set. The weights
+are not retrained.
 
 Interventions:
-  none      — unchanged (control, must match the pre-pruning table);
-  const     — replaced by its own spatial mean (removes all spatial structure,
-              keeps the magnitude);
-  vflip     — vertical flip (keeps histogram and structure, only swaps far and near);
-  hflip     — horizontal flip (CONTROL: keeps the vertical order, breaks alignment with
-              image content) — if vflip hurts more than hflip, the vertical axis is what matters;
-  rowmean   — each row replaced by its own mean (keeps the vertical profile, removes
-              the soil/vegetation component entirely);
-  ramp      — replaced by a linear vertical gradient, rescaled to the [min,max] of the
-              original map for each image (an ideal, parameter-free vertical prior).
+  none      unchanged (control)
+  const     replaced by its spatial mean (no spatial structure, same magnitude)
+  vflip     vertical flip (far and near swapped)
+  hflip     horizontal flip (vertical order kept, alignment with the image broken)
+  rowmean   each row replaced by its mean (vertical profile kept)
+  ramp      linear vertical gradient, rescaled to the [min, max] of the original map
 
     python scalemap_intervention.py --out paper_results/scalemap_intervention.json
 """

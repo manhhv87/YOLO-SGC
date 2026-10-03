@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-"""eval_guidance_seeds.py — guidance-line quality over five seeds for three pipelines.
+"""eval_guidance_seeds.py - guidance-line quality over five seeds for three pipelines.
 
-Extends the single-model evaluation to mean +/- standard deviation over five seeds, with
-a Welch t-test and Mann-Whitney test against the plain YOLOv8s baseline, the same
-statistical protocol used for the detection tables. The classical ExG detector has no
-learned parameters and is therefore run once.
+Mean and standard deviation over five seeds, with Welch's t-test and the Mann-Whitney test
+against YOLOv8s. The classical ExG detector has no learned parameters and runs once.
 
     python eval_guidance_seeds.py --split test --device 0
 """
@@ -121,7 +119,7 @@ def main():
             if pt in res[c]:
                 continue
             if not os.path.exists(pt):
-                print(f"THIẾU {pt}", flush=True); continue
+                print(f"MISSING {pt}", flush=True); continue
             res[c][pt] = score(YOLO(pt), gts)
             r = res[c][pt]
             print(f"{name:20s} {os.path.basename(os.path.dirname(pt)):22s} "
@@ -141,10 +139,10 @@ def main():
         v = list(res[c].values())
         g = lambda k: [x[k] for x in v]
         ms = lambda k: (S.mean(g(k)), S.stdev(g(k)) if len(v) > 1 else 0.0)
-        print(f"{name:20s} {ms('ang_mean')[0]:9.2f}±{ms('ang_mean')[1]:<5.2f} "
-              f"{ms('ang_med')[0]:8.2f}±{ms('ang_med')[1]:<5.2f} "
-              f"{ms('far_mean')[0]:8.3f}±{ms('far_mean')[1]:<5.3f} "
-              f"{ms('four')[0]:9.1f}±{ms('four')[1]:<5.1f}  (n={len(v)})")
+        print(f"{name:20s} {ms('ang_mean')[0]:9.2f}+/-{ms('ang_mean')[1]:<5.2f} "
+              f"{ms('ang_med')[0]:8.2f}+/-{ms('ang_med')[1]:<5.2f} "
+              f"{ms('far_mean')[0]:8.3f}+/-{ms('far_mean')[1]:<5.3f} "
+              f"{ms('four')[0]:9.1f}+/-{ms('four')[1]:<5.1f}  (n={len(v)})")
         if base is None:
             base = {k: g(k) for k in ("ang_mean", "four")}
         else:

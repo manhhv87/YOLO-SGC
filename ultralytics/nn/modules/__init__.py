@@ -60,25 +60,18 @@ from .block import (
     ResNetLayer,
     SCDown,
     TorchVision,
-    DSPF,
-    L_FPN,
-    DySample,
-    LFPNSplit,
     AMRF,
     ScaleMapHead,
     ScaleMapDown,
     SGCBlock,
-    SGCBlockLite,
-    SGCBlock_NoScale,       # ← THÊM
-    SGCBlock_NoAMRF,        # ← THÊM
-    SGCBlock_EqualWeight,   # ← THÊM
-    SGCBlock_Minimal,       # ← THÊM
-    SGCBlock_YPrior,        # ← THÊM (F-03)
-    SGCBlock_SGate,         # added: fixes the inert prior
-    SGCBlock_SFiLM,         # added: fixes the inert prior
-    SGCBlock_ShufPrior,     # added: Phase B control
-    SGCBlock_YPriorDeploy,  # ← THÊM (Phase C deploy)
-    SGCBlock_Deploy,        # ← THÊM (Phase C deploy)
+    SGCBlock_NoScale,
+    SGCBlock_NoAMRF,
+    SGCBlock_EqualWeight,
+    SGCBlock_Minimal,
+    SGCBlock_YPrior,
+    SGCBlock_ShufPrior,
+    SGCBlock_YPriorDeploy,
+    SGCBlock_Deploy,
 )
 from .conv import (
     MP,
@@ -202,17 +195,11 @@ __all__ = (
     "TorchVision",
     "Index",
     "A2C2f",
-    "DSPF",
-    "L_FPN",
-    "LFPNSplit",
     "AMRF",
     "ScaleMapHead",
     "ScaleMapDown",
     "SGCBlock",
-    "SGCBlockLite",
     "SGCBlock_YPrior",
-    "SGCBlock_SGate",
-    "SGCBlock_SFiLM",
     "SGCBlock_ShufPrior",
     "SGCBlock_YPriorDeploy",
     "SGCBlock_Deploy",

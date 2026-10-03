@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
-"""
-train_seed.py — Train dung DUNG recipe goc (trich tu args.yaml cua cac run corn)
-de chay multi-seed. Dung API framework (YOLO) + partial-load COCO nhu train.py --weights.
+"""train_seed.py - train one configuration with a given seed, using the recipe of the original runs.
 
-Vi du (train YOLOv8s-SGC-P345, seed 1, khoi tao COCO):
-    python train_seed.py --model yolov8s_sgc_p345.yaml --weights yolov8s.pt \
-        --data ~/datasets/corn/data.yaml --seed 1 --name yolov8s_sgc_p345_s1
+The model is built from its yaml, and the COCO weights are loaded where layer names and shapes match.
 
-Chay het multi-seed: xem vong lap o cuoi file (bo comment) hoac dung bash loop.
+    python train_seed.py --model paper_yolov8s_sgc_p345.yaml --weights yolov8s.pt \
+        --data ultralytics/cfg/datasets/corn.yaml --seed 1 --name yolov8s_sgc_p345_s1
 """
 import argparse
 from ultralytics import YOLO
 
-# ---- RECIPE GOC: copy nguyen tu args.yaml cua run corn (KHONG dung mac dinh Ultralytics) ----
+# ---- recipe of the original runs (from their args.yaml) ----
 RECIPE = dict(
     optimizer="auto", cos_lr=True, deterministic=True,
     lr0=0.005, lrf=0.01, momentum=0.937, weight_decay=0.0005,
@@ -26,8 +23,8 @@ RECIPE = dict(
 )
 
 ap = argparse.ArgumentParser()
-ap.add_argument("--model", required=True, help="*.yaml kien truc (vd yolov8s_sgc_p345.yaml)")
-ap.add_argument("--weights", default=None, help="*.pt COCO de partial-load vao backbone (vd yolov8s.pt)")
+ap.add_argument("--model", required=True, help="model yaml (e.g. paper_yolov8s_sgc_p345.yaml)")
+ap.add_argument("--weights", default=None, help="COCO weights, loaded where names and shapes match (e.g. yolov8s.pt)")
 ap.add_argument("--data", required=True, help="corn data.yaml")
 ap.add_argument("--epochs", type=int, default=200)
 ap.add_argument("--imgsz", type=int, default=640)
@@ -37,12 +34,12 @@ ap.add_argument("--seed", type=int, required=True)
 ap.add_argument("--name", required=True)
 ap.add_argument("--dir", default="runs/seed")
 ap.add_argument("--amp", action="store_true",
-                help="Bat AMP (run goc dung amp=true). Neu mAP sup ve ~0 thi BO co nay.")
+                help="mixed precision, as in the original runs")
 args = ap.parse_args()
 
-model = YOLO(args.model)                 # dung kien truc tu YAML (co AMRF/SGCBlock)
+model = YOLO(args.model)                 # architecture from the yaml
 if args.weights:
-    model.load(args.weights)             # partial-load COCO (chi cac layer khop key+shape)
+    model.load(args.weights)             # COCO weights where names and shapes match
 
 model.train(
     data=args.data, epochs=args.epochs, imgsz=args.imgsz, batch=args.batch,

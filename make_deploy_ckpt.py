@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-"""make_deploy_ckpt.py — port a trained checkpoint to the deployment architecture (no ScaleMapHead).
+"""make_deploy_ckpt.py - port a trained checkpoint to the deployment architecture (no ScaleMapHead).
 
-  YPrior  -> yolov8s_sgc_p345_yprior_deploy.yaml : weights transfer UNCHANGED
-             (the block generates its own ramp; the ScaleMapHead output was already ignored)
-  Full    -> yolov8s_sgc_p345_deploy.yaml        : cut the trailing column of weight_conv
-             (mathematically equivalent to setting S = 0)
+  YPrior -> yolov8s_sgc_p345_yprior_deploy.yaml: the weights transfer unchanged (the block
+            generates its own ramp, and the ScaleMapHead output was already ignored)
+  Full   -> yolov8s_sgc_p345_deploy.yaml: the trailing column of weight_conv is cut
+            (equivalent to setting S = 0)
 
-Layers 12/13/14 are dropped, so every index from 15 onwards shifts down by three.
+Layers 12, 13 and 14 are dropped, so every index from 15 onwards shifts down by three.
 
     python make_deploy_ckpt.py --src runs/.../best.pt --kind yprior --out weights/deploy/yprior.pt
 """

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-"""phaseB_eval.py — evaluate the four Phase B arms on the test set and run the pre-registered tests.
+"""phaseB_eval.py - test-set evaluation of the ablation arms of YOLOv8s-SGC-P345, five seeds each.
 
-Protocol: primary endpoint far AP@50, secondary mAP@50; n=5 seeds per arm; Welch t-test
-and Mann-Whitney; threshold p<0.05; smallest detectable difference about 1.6 mAP points.
+Results are cached in paper_results/phaseB_results.json.
 """
 import glob, json, os, sys
 import numpy as np
@@ -50,7 +49,7 @@ def main():
         res.setdefault(br, {})
         for p in paths:
             if not os.path.exists(p):
-                print(f"THIẾU {p}")
+                print(f"MISSING {p}")
                 continue
             if p in res[br]:
                 continue

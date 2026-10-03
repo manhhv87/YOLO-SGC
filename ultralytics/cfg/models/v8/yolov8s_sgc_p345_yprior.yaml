@@ -1,6 +1,6 @@
 # Ultralytics AGPL-3.0 License - https://ultralytics.com/license
-# ABLATION A: SGCBlock_YPrior — no ScaleMap guidance
-# Base: yolov8_sgc_balanced_p345.yaml (only SGCBlock -> SGCBlock_YPrior)
+# Ablation: SGCBlock_YPrior, a fixed vertical ramp instead of the learned scale map
+# Same as yolov8s_sgc_p345.yaml with SGCBlock replaced by SGCBlock_YPrior
 
 # Parameters
 nc: 80 # number of classes

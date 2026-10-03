@@ -1,5 +1,5 @@
-# YOLOv8 PAN chuan nhung CHI 2 detection head (P4/P5) — bo nhanh P3, KHONG co SGC.
-# Muc dich: tach loi ich do "bot head" voi loi ich do "SGC" khi so voi YOLOv8s-SGC-P45.
+# YOLOv8s PAN with two detection heads (P4, P5): the P3 branch is dropped, no SGC.
+# Separates the effect of dropping P3 from the effect of the SGC neck in YOLOv8s-SGC-P45.
 nc: 4
 scales:
   n: [0.33, 0.25, 1024]
@@ -27,4 +27,4 @@ head:
   - [-1, 1, Conv, [512, 3, 2]]                 # 13
   - [[-1, 9], 1, Concat, [1]]                  # 14  cat P5
   - [-1, 3, C2f, [1024]]                       # 15  (P5/32 out)
-  - [[12, 15], 1, Detect, [nc]]                # 16  <- CHI 2 head: P4, P5
+  - [[12, 15], 1, Detect, [nc]]                # 16  <- two heads: P4, P5

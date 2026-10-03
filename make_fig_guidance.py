@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""make_fig_guidance.py — guidance-line figure.
+"""make_fig_guidance.py - guidance-line figure.
 
 Four representative test images, each with three lines: ground truth (through the four
 box centroids), the classical Excess-Green detector, and the YOLOv8s-SGC-P345 pipeline.

@@ -1,16 +1,10 @@
 # -*- coding: utf-8 -*-
-"""bench_all_fps.py — measure FPS for every model under a single protocol.
+"""bench_all_fps.py - GPU throughput of every model under one protocol.
 
-Protocol used in the paper: batch 1, FP32, 640x640, fused model, 100 warm-up iterations,
-FPS = iterations / time over 1000 iterations, timed with CUDA events on an idle GPU.
-
-Measurement design, established by diagnosis:
-  * Measuring one model ten times in a row: 293.8 -> 293.4 FPS, 0.1% drift although the
-    temperature rose 65->74C, so time drift is negligible and round-robin interleaving
-    is unnecessary.
-  * But holding several models on the GPU at once shifts the reading by up to 2.5%,
-    depending on which models are co-resident, so each model is measured ALONE and freed
-    before the next is loaded. The GPU is warmed first to leave the idle clock (180 ->
+Batch 1, FP32, 640x640, fused model, 100 warm-up iterations, then FPS = iterations / time over
+1000 iterations, timed with CUDA events. Each model is loaded alone and freed before the next
+one, the GPU is warmed up before the first model, and each model is measured --reps times
+(the median is reported).
 """
 import argparse, gc, json, os, statistics, subprocess, sys
 
