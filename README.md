@@ -53,6 +53,39 @@ initial LR 0.005, 640×640 input, at most 200 epochs with patience 30. Accuracy 
 are means over five seeds (0–4). `paper_results/*.json` holds the per-checkpoint accuracy
 metrics behind the tables.
 
+## Additional experiments
+
+Scripts and results added with the revised manuscript. All results are in `paper_results/`.
+
+| Scripts | Results | Content |
+|---|---|---|
+| `e23_allruns.py` | `interv_allruns/`, `deploy_allruns.json` | interventions and removal of the prior branch on all 40 trained SGC models (Sections 4.4 and 4.6) |
+| `run_prune5.sh`, `train_seed_prune.py`, `e4_eval.py` | `prune5_results.json` | pruned models of Table 7, seeds 0-4 |
+| `e5_nano/` | `e5_trt.json` | TensorRT FP16 on the Jetson Nano (Tables 1 and 7; see `e5_nano/README.md`) |
+| `extract_e12_frames.py`, `e12_external_test.py` | `e12_external_test.json` | external test set (below) |
+
+Seed 0 of each pruned model is the original pruned checkpoint; seeds 1-4 are trained by
+`run_prune5.sh` with the same per-layer widths. The architectures before pruning are in
+`ultralytics/cfg/models/v8/e4_*_prune.yaml`.
+
+### External test set (Nam Sach)
+
+`datasets_e12/` holds 200 annotated frames from ten corn fields in Nam Sach (Hai Phong), recorded
+on 5 July 2026, away from the training site and in a different year and growing season. Each field
+was recorded in one 8K video by a smartphone (Samsung Galaxy S23) mounted on the robot. Twenty
+frames per video, evenly spaced in time, are given as the central square of the frame resized to
+640x640 (`images/`), with labels of the four distance bands in the class order of `corn.yaml`
+(`labels/`). `frames.csv` gives the source video, frame index and time of each frame.
+
+For the test, each frame is taken again from the 8K video at the scale at which the rows appear as
+large as in the training images. The scale is estimated on two fields and applied to the other
+eight, in five rotations (`e12_external_test.py`). `paper_results/e12_external_test.json` gives
+the out-of-fold mAP@50, far-class AP and mAP@50-95 of every training run.
+
+The images and labels are released under CC BY 4.0. The videos were recorded in the Nam Sach
+campaign of the MaizeHorizon dataset
+([doi:10.5281/zenodo.21962807](https://doi.org/10.5281/zenodo.21962807)).
+
 ## Licence
 
 Builds on [Ultralytics](https://github.com/ultralytics/ultralytics) (AGPL-3.0) via

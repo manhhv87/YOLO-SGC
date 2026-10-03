@@ -1,0 +1,1023 @@
+{
+ "note": "TensorRT engines built and timed with trtexec on the Jetson Nano; accuracy of the FP16 engine vs the FP32 ONNX model under the same pre/post-processing (trt_common.py).",
+ "device_state": {
+  "start": "### 2026-10-01 21:44:12\n--- nvpmodel\nNVPM WARN: fan mode is not set!\nNV Power Mode: MAXN\n0\n--- jetson_clocks\nSOC family:tegra210  Machine:NVIDIA Jetson Nano Developer Kit\nOnline CPUs: 0-3\ncpu0: Online=1 Governor=schedutil MinFreq=1479000 MaxFreq=1479000 CurrentFreq=1479000 IdleStates: WFI=0 c7=0 \ncpu1: Online=1 Governor=schedutil MinFreq=1479000 MaxFreq=1479000 CurrentFreq=1479000 IdleStates: WFI=0 c7=0 \ncpu2: Online=1 Governor=schedutil MinFreq=1479000 MaxFreq=1479000 CurrentFreq=1479000 IdleStates: WFI=0 c7=0 \ncpu3: Online=1 Governor=schedutil MinFreq=1479000 MaxFreq=1479000 CurrentFreq=1479000 IdleStates: WFI=0 c7=0 \nGPU MinFreq=921600000 MaxFreq=921600000 CurrentFreq=921600000\nEMC MinFreq=204000000 MaxFreq=1600000000 CurrentFreq=1600000000 FreqOverride=1\nFan: PWM=0\nNV Power Mode: MAXN\n--- L4T\n# R32 (release), REVISION: 7.6, GCID: 38171779, BOARD: t210ref, EABI: aarch64, DATE: Tue Nov  5 07:46:14 UTC 2024\n--- TensorRT\nlibnvinfer8 8.2.1-1+cuda10.2\nnvidia-container-csv-tensorrt 8.2\nnvidia-tensorrt 4.6.6-b24\ntensorrt 8.2.1.9-1+cuda10.2\n--- tegrastats\nRAM 1136/3964MB (lfb 256x4MB) SWAP 0/6078MB (cached 0MB) IRAM 0/252kB(lfb 252kB) CPU [1%@1479,0%@1479,0%@1479,0%@1479] EMC_FREQ 0%@1600 GR3D_FREQ 0%@921 APE 25 PLL@42C CPU@43C PMIC@50C GPU@41.5C AO@51.5C thermal@42.25C POM_5V_IN 2123/2123 POM_5V_GPU 163/163 POM_5V_CPU 489/489\n--- free -m\n              total        used        free      shared  buff/cache   available\nMem:           3963        1049        1106          33        1808        2739\nSwap:          6077           0        6077\n",
+  "end": "### 2026-10-02 03:57:07\n--- nvpmodel\nNVPM WARN: fan mode is not set!\nNV Power Mode: MAXN\n0\n--- jetson_clocks\nSOC family:tegra210  Machine:NVIDIA Jetson Nano Developer Kit\nOnline CPUs: 0-3\ncpu0: Online=1 Governor=schedutil MinFreq=1479000 MaxFreq=1479000 CurrentFreq=1479000 IdleStates: WFI=0 c7=0 \ncpu1: Online=1 Governor=schedutil MinFreq=1479000 MaxFreq=1479000 CurrentFreq=1479000 IdleStates: WFI=0 c7=0 \ncpu2: Online=1 Governor=schedutil MinFreq=1479000 MaxFreq=1479000 CurrentFreq=1479000 IdleStates: WFI=0 c7=0 \ncpu3: Online=1 Governor=schedutil MinFreq=1479000 MaxFreq=1479000 CurrentFreq=1479000 IdleStates: WFI=0 c7=0 \nGPU MinFreq=921600000 MaxFreq=921600000 CurrentFreq=921600000\nEMC MinFreq=204000000 MaxFreq=1600000000 CurrentFreq=1600000000 FreqOverride=1\nFan: PWM=160\nNV Power Mode: MAXN\n--- L4T\n# R32 (release), REVISION: 7.6, GCID: 38171779, BOARD: t210ref, EABI: aarch64, DATE: Tue Nov  5 07:46:14 UTC 2024\n--- TensorRT\nlibnvinfer8 8.2.1-1+cuda10.2\nnvidia-container-csv-tensorrt 8.2\nnvidia-tensorrt 4.6.6-b24\ntensorrt 8.2.1.9-1+cuda10.2\n--- tegrastats\nRAM 1311/3964MB (lfb 71x4MB) SWAP 330/6078MB (cached 10MB) IRAM 0/252kB(lfb 252kB) CPU [1%@1479,1%@1479,0%@1479,3%@1479] EMC_FREQ 4%@1600 GR3D_FREQ 0%@921 APE 25 PLL@65.5C CPU@67C PMIC@50C GPU@65C AO@75C thermal@66C POM_5V_IN 2849/2849 POM_5V_GPU 284/284 POM_5V_CPU 854/854\n--- free -m\n              total        used        free      shared  buff/cache   available\nMem:           3963        1265        1942          11         755        3013\nSwap:          6077         330        5747\n"
+ },
+ "models": {
+  "yolov9s_sgc_p45": {
+   "source": "weights/main/yolov9s_sgc_p45/best.pt",
+   "paper_fp32_fps": 5.8,
+   "trt_fp16": {
+    "gpu_ms_min": 80.9121,
+    "gpu_ms_max": 81.8555,
+    "gpu_ms_mean": 81.061,
+    "gpu_ms_median": 81.0391,
+    "fps_gpu_mean": 12.33638864558789,
+    "host_ms_mean": 81.567,
+    "host_ms_median": 81.543,
+    "host_ms_p99": 81.9229,
+    "fps_host_mean": 12.259859992398887,
+    "throughput_qps": 12.2587,
+    "trt_version": "8.2.1",
+    "n_iter": 378,
+    "gpu_ms_p50": 81.03784999999999,
+    "gpu_ms_p95": 81.3242,
+    "gpu_ms_p99": 81.43924100000001
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9444891540445833,
+    "map50_95": 0.5030568752703962,
+    "far_ap50": 0.8624251287537167,
+    "n_det": 13361
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9445587166726349,
+    "map50_95": 0.5033873607036012,
+    "far_ap50": 0.8650481226095059,
+    "n_det": 13356
+   },
+   "nano_eval_ms": {
+    "read": 10.54988128405239,
+    "pre": 17.750228905977565,
+    "infer": 85.44166804195265,
+    "nms": 6.339324846150703
+   }
+  },
+  "yolov8s_sgc_p45_pruned": {
+   "source": "weights/prune/yolov8s_sgc_p45/best.pt",
+   "paper_fp32_fps": 27.7,
+   "trt_fp16": {
+    "gpu_ms_min": 21.9106,
+    "gpu_ms_max": 22.3569,
+    "gpu_ms_mean": 21.9847,
+    "gpu_ms_median": 21.9768,
+    "fps_gpu_mean": 45.48617902450341,
+    "host_ms_mean": 22.4868,
+    "host_ms_median": 22.4785,
+    "host_ms_p99": 22.8008,
+    "fps_host_mean": 44.470533824288026,
+    "throughput_qps": 44.4568,
+    "trt_version": "8.2.1",
+    "n_iter": 1361,
+    "gpu_ms_p50": 21.9766,
+    "gpu_ms_p95": 22.0239,
+    "gpu_ms_p99": 22.284959999999998
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9570183123342489,
+    "map50_95": 0.5342855296158415,
+    "far_ap50": 0.897911175371521,
+    "n_det": 16613
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9569671794255835,
+    "map50_95": 0.5341908261929483,
+    "far_ap50": 0.895825749779776,
+    "n_det": 16646
+   },
+   "nano_eval_ms": {
+    "read": 10.575875788126723,
+    "pre": 17.74157639183977,
+    "infer": 25.640231568017043,
+    "nms": 7.552727411850356
+   }
+  },
+  "yolov5s": {
+   "source": "weights/main/yolov5s/best.pt",
+   "paper_fp32_fps": 5.0,
+   "trt_fp16": {
+    "gpu_ms_min": 90.4297,
+    "gpu_ms_max": 91.1016,
+    "gpu_ms_mean": 90.6444,
+    "gpu_ms_median": 90.624,
+    "fps_gpu_mean": 11.032121123864243,
+    "host_ms_mean": 91.174,
+    "host_ms_median": 91.1523,
+    "host_ms_p99": 91.5547,
+    "fps_host_mean": 10.968039133963629,
+    "throughput_qps": 10.9672,
+    "trt_version": "8.2.1",
+    "n_iter": 338,
+    "gpu_ms_p50": 90.6235,
+    "gpu_ms_p95": 90.90665,
+    "gpu_ms_p99": 91.032157
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9545664509119731,
+    "map50_95": 0.5082420810313989,
+    "far_ap50": 0.8911463610997558,
+    "n_det": 16506
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9531866893520533,
+    "map50_95": 0.5083199259793486,
+    "far_ap50": 0.8900361290605094,
+    "n_det": 16521
+   },
+   "nano_eval_ms": {
+    "read": 10.566866532186395,
+    "pre": 17.67284290198586,
+    "infer": 94.34150023205439,
+    "nms": 7.998629166060709
+   }
+  },
+  "yolov5s_sgc_p345": {
+   "source": "weights/main/yolov5s_sgc_p345/best.pt",
+   "paper_fp32_fps": 4.5,
+   "trt_fp16": {
+    "gpu_ms_min": 133.672,
+    "gpu_ms_max": 134.656,
+    "gpu_ms_mean": 133.939,
+    "gpu_ms_median": 133.916,
+    "fps_gpu_mean": 7.466085307490724,
+    "host_ms_mean": 134.467,
+    "host_ms_median": 134.446,
+    "host_ms_p99": 134.904,
+    "fps_host_mean": 7.436768872660206,
+    "throughput_qps": 7.4364,
+    "trt_version": "8.2.1",
+    "n_iter": 230,
+    "gpu_ms_p50": 133.917,
+    "gpu_ms_p95": 134.2566,
+    "gpu_ms_p99": 134.39784999999998
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9544155486116621,
+    "map50_95": 0.4781001997891604,
+    "far_ap50": 0.9012523717049887,
+    "n_det": 13157
+   },
+   "acc_trt_fp16": {
+    "map50": 0.954498454450153,
+    "map50_95": 0.4770915018390619,
+    "far_ap50": 0.9011793815097326,
+    "n_det": 13163
+   },
+   "nano_eval_ms": {
+    "read": 10.558675729960669,
+    "pre": 17.651457778119948,
+    "infer": 138.49654961215856,
+    "nms": 6.421865271782735
+   }
+  },
+  "yolov5s_sgc_p45": {
+   "source": "weights/main/yolov5s_sgc_p45/best.pt",
+   "paper_fp32_fps": 7.6,
+   "trt_fp16": {
+    "gpu_ms_min": 61.8945,
+    "gpu_ms_max": 62.8574,
+    "gpu_ms_mean": 62.062,
+    "gpu_ms_median": 62.043,
+    "fps_gpu_mean": 16.112919338725792,
+    "host_ms_mean": 62.567,
+    "host_ms_median": 62.5488,
+    "host_ms_p99": 62.939,
+    "fps_host_mean": 15.982866367254303,
+    "throughput_qps": 15.9812,
+    "trt_version": "8.2.1",
+    "n_iter": 492,
+    "gpu_ms_p50": 62.04305,
+    "gpu_ms_p95": 62.339775,
+    "gpu_ms_p99": 62.437264
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.950287606444463,
+    "map50_95": 0.45752168700557555,
+    "far_ap50": 0.8849343542477587,
+    "n_det": 12079
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9502483878346752,
+    "map50_95": 0.45750748832224575,
+    "far_ap50": 0.8850474113620419,
+    "n_det": 12100
+   },
+   "nano_eval_ms": {
+    "read": 10.584956855920609,
+    "pre": 17.756179336080095,
+    "infer": 65.90086606402474,
+    "nms": 5.626482710125856
+   }
+  },
+  "yolov8s": {
+   "source": "weights/main/yolov8s/best.pt",
+   "paper_fp32_fps": 4.5,
+   "trt_fp16": {
+    "gpu_ms_min": 101.55,
+    "gpu_ms_max": 102.227,
+    "gpu_ms_mean": 101.787,
+    "gpu_ms_median": 101.766,
+    "fps_gpu_mean": 9.824437305353335,
+    "host_ms_mean": 102.316,
+    "host_ms_median": 102.293,
+    "host_ms_p99": 102.713,
+    "fps_host_mean": 9.773642441064936,
+    "throughput_qps": 9.77295,
+    "trt_version": "8.2.1",
+    "n_iter": 302,
+    "gpu_ms_p50": 101.7655,
+    "gpu_ms_p95": 102.07085000000001,
+    "gpu_ms_p99": 102.18894999999999
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9253228720864548,
+    "map50_95": 0.49887169356069894,
+    "far_ap50": 0.8027961701792977,
+    "n_det": 21068
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9255633472589522,
+    "map50_95": 0.49897775863525845,
+    "far_ap50": 0.8036406215986253,
+    "n_det": 21111
+   },
+   "nano_eval_ms": {
+    "read": 10.565371856180718,
+    "pre": 17.701651962139294,
+    "infer": 105.85324815979402,
+    "nms": 10.424681860080454
+   }
+  },
+  "yolov8s_sgc_p345": {
+   "source": "weights/main/yolov8s_sgc_p345/best.pt",
+   "paper_fp32_fps": 5.2,
+   "trt_fp16": {
+    "gpu_ms_min": 108.965,
+    "gpu_ms_max": 109.896,
+    "gpu_ms_mean": 109.234,
+    "gpu_ms_median": 109.205,
+    "fps_gpu_mean": 9.154658805866307,
+    "host_ms_mean": 109.762,
+    "host_ms_median": 109.731,
+    "host_ms_p99": 110.215,
+    "fps_host_mean": 9.110621162150835,
+    "throughput_qps": 9.11012,
+    "trt_version": "8.2.1",
+    "n_iter": 281,
+    "gpu_ms_p50": 109.205,
+    "gpu_ms_p95": 109.547,
+    "gpu_ms_p99": 109.6954
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.966482877311972,
+    "map50_95": 0.5649678973277718,
+    "far_ap50": 0.9096076013480867,
+    "n_det": 10369
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9667415080483378,
+    "map50_95": 0.566129624833525,
+    "far_ap50": 0.9111742411861772,
+    "n_det": 10373
+   },
+   "nano_eval_ms": {
+    "read": 10.582450013796915,
+    "pre": 17.680113982059993,
+    "infer": 113.89949379410245,
+    "nms": 5.396944917913061
+   }
+  },
+  "yolov8s_sgc_p45": {
+   "source": "weights/main/yolov8s_sgc_p45/best.pt",
+   "paper_fp32_fps": 7.3,
+   "trt_fp16": {
+    "gpu_ms_min": 64.9658,
+    "gpu_ms_max": 66.0376,
+    "gpu_ms_mean": 65.1248,
+    "gpu_ms_median": 65.1094,
+    "fps_gpu_mean": 15.355133528241163,
+    "host_ms_mean": 65.6303,
+    "host_ms_median": 65.6152,
+    "host_ms_p99": 66.0,
+    "fps_host_mean": 15.23686467988109,
+    "throughput_qps": 15.2353,
+    "trt_version": "8.2.1",
+    "n_iter": 469,
+    "gpu_ms_p50": 65.1094,
+    "gpu_ms_p95": 65.37714,
+    "gpu_ms_p99": 65.499804
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9570637230794257,
+    "map50_95": 0.567736063976015,
+    "far_ap50": 0.8969728667278114,
+    "n_det": 11863
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9569953155913251,
+    "map50_95": 0.5674912780580958,
+    "far_ap50": 0.8968270870966835,
+    "n_det": 11881
+   },
+   "nano_eval_ms": {
+    "read": 10.563649001982412,
+    "pre": 17.666047178019653,
+    "infer": 69.10999797427212,
+    "nms": 5.501999127751333
+   }
+  },
+  "yolov9s": {
+   "source": "weights/main/yolov9s/best.pt",
+   "paper_fp32_fps": 4.2,
+   "trt_fp16": {
+    "gpu_ms_min": 112.15,
+    "gpu_ms_max": 112.879,
+    "gpu_ms_mean": 112.486,
+    "gpu_ms_median": 112.453,
+    "fps_gpu_mean": 8.889995199402591,
+    "host_ms_mean": 113.015,
+    "host_ms_median": 112.981,
+    "host_ms_p99": 113.375,
+    "fps_host_mean": 8.848382958014422,
+    "throughput_qps": 8.84784,
+    "trt_version": "8.2.1",
+    "n_iter": 274,
+    "gpu_ms_p50": 112.453,
+    "gpu_ms_p95": 112.77635,
+    "gpu_ms_p99": 112.83454
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9479794346401276,
+    "map50_95": 0.5432944174847165,
+    "far_ap50": 0.8560218740396086,
+    "n_det": 36587
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9481388648646464,
+    "map50_95": 0.5428466396969943,
+    "far_ap50": 0.8566179564905555,
+    "n_det": 36673
+   },
+   "nano_eval_ms": {
+    "read": 10.555778706082492,
+    "pre": 17.679956607840722,
+    "infer": 117.28798975187237,
+    "nms": 17.53375532812788
+   }
+  },
+  "yolov9s_sgc_p345": {
+   "source": "weights/main/yolov9s_sgc_p345/best.pt",
+   "paper_fp32_fps": 4.6,
+   "trt_fp16": {
+    "gpu_ms_min": 107.545,
+    "gpu_ms_max": 108.457,
+    "gpu_ms_mean": 107.74,
+    "gpu_ms_median": 107.707,
+    "fps_gpu_mean": 9.281603861147207,
+    "host_ms_mean": 108.269,
+    "host_ms_median": 108.234,
+    "host_ms_p99": 108.643,
+    "fps_host_mean": 9.236254144769047,
+    "throughput_qps": 9.23568,
+    "trt_version": "8.2.1",
+    "n_iter": 286,
+    "gpu_ms_p50": 107.70599999999999,
+    "gpu_ms_p95": 108.04175000000001,
+    "gpu_ms_p99": 108.12065
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9367762801420133,
+    "map50_95": 0.47109932295919316,
+    "far_ap50": 0.8512588234595975,
+    "n_det": 13061
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9366924772091659,
+    "map50_95": 0.47110522659783455,
+    "far_ap50": 0.8514130506004753,
+    "n_det": 13080
+   },
+   "nano_eval_ms": {
+    "read": 10.560601923731156,
+    "pre": 17.665904992303695,
+    "infer": 112.00450731177989,
+    "nms": 6.475372688102652
+   }
+  },
+  "yolov11s": {
+   "source": "weights/main/yolov11s/best.pt",
+   "paper_fp32_fps": 4.5,
+   "trt_fp16": {
+    "gpu_ms_min": 103.671,
+    "gpu_ms_max": 104.518,
+    "gpu_ms_mean": 103.858,
+    "gpu_ms_median": 103.857,
+    "fps_gpu_mean": 9.628531263841014,
+    "host_ms_mean": 104.384,
+    "host_ms_median": 104.382,
+    "host_ms_p99": 104.531,
+    "fps_host_mean": 9.580012262415696,
+    "throughput_qps": 9.57943,
+    "trt_version": "8.2.1",
+    "n_iter": 296,
+    "gpu_ms_p50": 103.857,
+    "gpu_ms_p95": 103.965,
+    "gpu_ms_p99": 103.99855000000001
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9274746388523059,
+    "map50_95": 0.4739642715689988,
+    "far_ap50": 0.8112381188876193,
+    "n_det": 14648
+   },
+   "acc_trt_fp16": {
+    "map50": 0.927467171711555,
+    "map50_95": 0.47415321232843405,
+    "far_ap50": 0.8124287893408647,
+    "n_det": 14651
+   },
+   "nano_eval_ms": {
+    "read": 10.554353117884602,
+    "pre": 17.640249514122843,
+    "infer": 107.03925184189575,
+    "nms": 7.180143264165963
+   }
+  },
+  "yolov11s_sgc_p345": {
+   "source": "weights/main/yolov11s_sgc_p345/best.pt",
+   "paper_fp32_fps": 5.2,
+   "trt_fp16": {
+    "gpu_ms_min": 103.229,
+    "gpu_ms_max": 103.779,
+    "gpu_ms_mean": 103.397,
+    "gpu_ms_median": 103.393,
+    "fps_gpu_mean": 9.67146048724818,
+    "host_ms_mean": 103.925,
+    "host_ms_median": 103.92,
+    "host_ms_p99": 104.161,
+    "fps_host_mean": 9.622323791195575,
+    "throughput_qps": 9.62171,
+    "trt_version": "8.2.1",
+    "n_iter": 298,
+    "gpu_ms_p50": 103.392,
+    "gpu_ms_p95": 103.51429999999999,
+    "gpu_ms_p99": 103.6343
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9682310103060235,
+    "map50_95": 0.5883463169612131,
+    "far_ap50": 0.9113418896299138,
+    "n_det": 31128
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9679062310280659,
+    "map50_95": 0.5878347231885958,
+    "far_ap50": 0.911744985359354,
+    "n_det": 31156
+   },
+   "nano_eval_ms": {
+    "read": 10.541791859926889,
+    "pre": 17.639944094087696,
+    "infer": 107.01341726616374,
+    "nms": 14.144732257860596
+   }
+  },
+  "yolov11s_sgc_p45": {
+   "source": "weights/main/yolov11s_sgc_p45/best.pt",
+   "paper_fp32_fps": 6.1,
+   "trt_fp16": {
+    "gpu_ms_min": 75.0293,
+    "gpu_ms_max": 75.5957,
+    "gpu_ms_mean": 75.2464,
+    "gpu_ms_median": 75.2502,
+    "fps_gpu_mean": 13.289672329839037,
+    "host_ms_mean": 75.7533,
+    "host_ms_median": 75.7578,
+    "host_ms_p99": 75.9199,
+    "fps_host_mean": 13.200745050050626,
+    "throughput_qps": 13.1996,
+    "trt_version": "8.2.1",
+    "n_iter": 406,
+    "gpu_ms_p50": 75.25,
+    "gpu_ms_p95": 75.35889999999999,
+    "gpu_ms_p99": 75.412005
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9554731010319316,
+    "map50_95": 0.5644698162257623,
+    "far_ap50": 0.882912389240405,
+    "n_det": 10927
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9553087980213502,
+    "map50_95": 0.5644243211727653,
+    "far_ap50": 0.8823388676627484,
+    "n_det": 10933
+   },
+   "nano_eval_ms": {
+    "read": 10.581890394023503,
+    "pre": 17.709975597972516,
+    "infer": 79.20749184998567,
+    "nms": 5.168552927963901
+   }
+  },
+  "yolov5s_pruned": {
+   "source": "weights/prune/yolov5s/best.pt",
+   "paper_fp32_fps": 10.7,
+   "trt_fp16": {
+    "gpu_ms_min": 49.1418,
+    "gpu_ms_max": 49.6855,
+    "gpu_ms_mean": 49.3186,
+    "gpu_ms_median": 49.2994,
+    "fps_gpu_mean": 20.276325767560312,
+    "host_ms_mean": 49.8438,
+    "host_ms_median": 49.8262,
+    "host_ms_p99": 50.1836,
+    "fps_host_mean": 20.06267579919669,
+    "throughput_qps": 20.0599,
+    "trt_version": "8.2.1",
+    "n_iter": 618,
+    "gpu_ms_p50": 49.29945,
+    "gpu_ms_p95": 49.474595,
+    "gpu_ms_p99": 49.6504
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9456870253577194,
+    "map50_95": 0.49900292314852013,
+    "far_ap50": 0.8569306383577697,
+    "n_det": 15822
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9462819353809137,
+    "map50_95": 0.4998452671477436,
+    "far_ap50": 0.8572386978757857,
+    "n_det": 15829
+   },
+   "nano_eval_ms": {
+    "read": 10.567435592223774,
+    "pre": 17.653533693795907,
+    "infer": 52.854661148099694,
+    "nms": 7.692082229841617
+   }
+  },
+  "yolov5s_sgc_p345_pruned": {
+   "source": "weights/prune/yolov5s_sgc_p345/best.pt",
+   "paper_fp32_fps": 7.2,
+   "trt_fp16": {
+    "gpu_ms_min": 99.0088,
+    "gpu_ms_max": 99.9863,
+    "gpu_ms_mean": 99.2704,
+    "gpu_ms_median": 99.2422,
+    "fps_gpu_mean": 10.073496228483013,
+    "host_ms_mean": 99.798,
+    "host_ms_median": 99.7705,
+    "host_ms_p99": 100.197,
+    "fps_host_mean": 10.020240886590914,
+    "throughput_qps": 10.0195,
+    "trt_version": "8.2.1",
+    "n_iter": 310,
+    "gpu_ms_p50": 99.2422,
+    "gpu_ms_p95": 99.595945,
+    "gpu_ms_p99": 99.760862
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9629203791836587,
+    "map50_95": 0.521893938255235,
+    "far_ap50": 0.9136303045321796,
+    "n_det": 11673
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9639201133530827,
+    "map50_95": 0.5218439081654377,
+    "far_ap50": 0.9145383445834999,
+    "n_det": 11671
+   },
+   "nano_eval_ms": {
+    "read": 10.553496859880397,
+    "pre": 17.69148773008783,
+    "infer": 103.74430335203942,
+    "nms": 5.774796119745588
+   }
+  },
+  "yolov5s_sgc_p45_pruned": {
+   "source": "weights/prune/yolov5s_sgc_p45/best.pt",
+   "paper_fp32_fps": 15.3,
+   "trt_fp16": {
+    "gpu_ms_min": 35.8845,
+    "gpu_ms_max": 36.3652,
+    "gpu_ms_mean": 35.9769,
+    "gpu_ms_median": 35.9648,
+    "fps_gpu_mean": 27.795613296309575,
+    "host_ms_mean": 36.4801,
+    "host_ms_median": 36.4668,
+    "host_ms_p99": 36.8105,
+    "fps_host_mean": 27.41220555864704,
+    "throughput_qps": 27.4076,
+    "trt_version": "8.2.1",
+    "n_iter": 840,
+    "gpu_ms_p50": 35.9648,
+    "gpu_ms_p95": 36.03325,
+    "gpu_ms_p99": 36.293159
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9482831531752012,
+    "map50_95": 0.4945142425902496,
+    "far_ap50": 0.8928901389905615,
+    "n_det": 12873
+   },
+   "acc_trt_fp16": {
+    "map50": 0.948357770078917,
+    "map50_95": 0.49408141158991026,
+    "far_ap50": 0.8926032380999614,
+    "n_det": 12862
+   },
+   "nano_eval_ms": {
+    "read": 10.55763767422468,
+    "pre": 17.777380213796278,
+    "infer": 39.72035432799021,
+    "nms": 5.991261824005051
+   }
+  },
+  "yolov8s_pruned": {
+   "source": "weights/prune/yolov8s/best.pt",
+   "paper_fp32_fps": 10.3,
+   "trt_fp16": {
+    "gpu_ms_min": 51.1191,
+    "gpu_ms_max": 51.7134,
+    "gpu_ms_mean": 51.259,
+    "gpu_ms_median": 51.2441,
+    "fps_gpu_mean": 19.508769191751693,
+    "host_ms_mean": 51.7839,
+    "host_ms_median": 51.7695,
+    "host_ms_p99": 52.1494,
+    "fps_host_mean": 19.311021379231768,
+    "throughput_qps": 19.3083,
+    "trt_version": "8.2.1",
+    "n_iter": 593,
+    "gpu_ms_p50": 51.2441,
+    "gpu_ms_p95": 51.4547,
+    "gpu_ms_p99": 51.61154
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9332490237306289,
+    "map50_95": 0.4748631744066255,
+    "far_ap50": 0.8325248120169312,
+    "n_det": 18798
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9331850065791167,
+    "map50_95": 0.47555231064290443,
+    "far_ap50": 0.8316916069722586,
+    "n_det": 18819
+   },
+   "nano_eval_ms": {
+    "read": 10.55929081395152,
+    "pre": 17.681741835869616,
+    "infer": 55.165149988242774,
+    "nms": 9.18003888396197
+   }
+  },
+  "yolov8s_sgc_p345_pruned": {
+   "source": "weights/prune/yolov8s_sgc_p345/best.pt",
+   "paper_fp32_fps": 9.3,
+   "trt_fp16": {
+    "gpu_ms_min": 74.1406,
+    "gpu_ms_max": 74.668,
+    "gpu_ms_mean": 74.2904,
+    "gpu_ms_median": 74.2676,
+    "fps_gpu_mean": 13.460689402668446,
+    "host_ms_mean": 74.8192,
+    "host_ms_median": 74.7969,
+    "host_ms_p99": 75.1777,
+    "fps_host_mean": 13.365553226979172,
+    "throughput_qps": 13.3644,
+    "trt_version": "8.2.1",
+    "n_iter": 412,
+    "gpu_ms_p50": 74.2676,
+    "gpu_ms_p95": 74.59184,
+    "gpu_ms_p99": 74.652981
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9564625298584412,
+    "map50_95": 0.5602631467882324,
+    "far_ap50": 0.8921106998431312,
+    "n_det": 18984
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9565832701580862,
+    "map50_95": 0.5601819051048862,
+    "far_ap50": 0.8924929585824063,
+    "n_det": 19001
+   },
+   "nano_eval_ms": {
+    "read": 10.548279026086675,
+    "pre": 17.680547949959873,
+    "infer": 78.69486860181496,
+    "nms": 9.193299946273328
+   }
+  },
+  "yolov9s_pruned": {
+   "source": "weights/prune/yolov9s/best.pt",
+   "paper_fp32_fps": 5.7,
+   "trt_fp16": {
+    "gpu_ms_min": 85.4082,
+    "gpu_ms_max": 86.5361,
+    "gpu_ms_mean": 85.6524,
+    "gpu_ms_median": 85.6267,
+    "fps_gpu_mean": 11.675096086040789,
+    "host_ms_mean": 86.1805,
+    "host_ms_median": 86.1523,
+    "host_ms_p99": 86.6113,
+    "fps_host_mean": 11.60355300793103,
+    "throughput_qps": 11.6026,
+    "trt_version": "8.2.1",
+    "n_iter": 358,
+    "gpu_ms_p50": 85.6251,
+    "gpu_ms_p95": 85.9531,
+    "gpu_ms_p99": 86.08676
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9527224230191722,
+    "map50_95": 0.565592419844458,
+    "far_ap50": 0.8710516871635167,
+    "n_det": 26646
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9526826361921242,
+    "map50_95": 0.5656978197576693,
+    "far_ap50": 0.8710616020412503,
+    "n_det": 26694
+   },
+   "nano_eval_ms": {
+    "read": 10.557753624219913,
+    "pre": 17.672581359933247,
+    "infer": 90.0355076580745,
+    "nms": 12.696980239910772
+   }
+  },
+  "yolov9s_sgc_p345_pruned": {
+   "source": "weights/prune/yolov9s_sgc_p345/best.pt",
+   "paper_fp32_fps": 6.3,
+   "trt_fp16": {
+    "gpu_ms_min": 83.668,
+    "gpu_ms_max": 84.3008,
+    "gpu_ms_mean": 83.8955,
+    "gpu_ms_median": 83.8711,
+    "fps_gpu_mean": 11.919590442872384,
+    "host_ms_mean": 84.4265,
+    "host_ms_median": 84.4023,
+    "host_ms_p99": 84.793,
+    "fps_host_mean": 11.844622245385038,
+    "throughput_qps": 11.8436,
+    "trt_version": "8.2.1",
+    "n_iter": 364,
+    "gpu_ms_p50": 83.87280000000001,
+    "gpu_ms_p95": 84.185745,
+    "gpu_ms_p99": 84.256713
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9636977411659031,
+    "map50_95": 0.5537839450435323,
+    "far_ap50": 0.9014618148953303,
+    "n_det": 10725
+   },
+   "acc_trt_fp16": {
+    "map50": 0.963794284924964,
+    "map50_95": 0.5540242784289491,
+    "far_ap50": 0.9014996594690604,
+    "n_det": 10732
+   },
+   "nano_eval_ms": {
+    "read": 10.554794372204924,
+    "pre": 17.663939759964705,
+    "infer": 88.06777466798667,
+    "nms": 5.45554442582943
+   }
+  },
+  "yolov9s_sgc_p45_pruned": {
+   "source": "weights/prune/yolov9s_sgc_p45/best.pt",
+   "paper_fp32_fps": 8.1,
+   "trt_fp16": {
+    "gpu_ms_min": 61.5112,
+    "gpu_ms_max": 62.0625,
+    "gpu_ms_mean": 61.62,
+    "gpu_ms_median": 61.6016,
+    "fps_gpu_mean": 16.22849724115547,
+    "host_ms_mean": 62.1267,
+    "host_ms_median": 62.1074,
+    "host_ms_p99": 62.4883,
+    "fps_host_mean": 16.09613901913348,
+    "throughput_qps": 16.0942,
+    "trt_version": "8.2.1",
+    "n_iter": 496,
+    "gpu_ms_p50": 61.6016,
+    "gpu_ms_p95": 61.880125,
+    "gpu_ms_p99": 61.967205
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9609681676564295,
+    "map50_95": 0.5412422079829219,
+    "far_ap50": 0.9055655031667333,
+    "n_det": 13099
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9607517003680319,
+    "map50_95": 0.5417789878326562,
+    "far_ap50": 0.9049327909011893,
+    "n_det": 13100
+   },
+   "nano_eval_ms": {
+    "read": 10.553310545990826,
+    "pre": 17.72445101205085,
+    "infer": 65.64861596608534,
+    "nms": 6.161853584024357
+   }
+  },
+  "yolov11s_pruned": {
+   "source": "weights/prune/yolov11s/best.pt",
+   "paper_fp32_fps": 8.9,
+   "trt_fp16": {
+    "gpu_ms_min": 60.4375,
+    "gpu_ms_max": 61.3765,
+    "gpu_ms_mean": 60.5659,
+    "gpu_ms_median": 60.5625,
+    "fps_gpu_mean": 16.51094097503711,
+    "host_ms_mean": 61.0914,
+    "host_ms_median": 61.0879,
+    "host_ms_p99": 61.2148,
+    "fps_host_mean": 16.368916083114808,
+    "throughput_qps": 16.3673,
+    "trt_version": "8.2.1",
+    "n_iter": 503,
+    "gpu_ms_p50": 60.562,
+    "gpu_ms_p95": 60.6289,
+    "gpu_ms_p99": 60.691362000000005
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9527685657394415,
+    "map50_95": 0.5747157195714355,
+    "far_ap50": 0.8605164497469954,
+    "n_det": 13737
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9525915584268875,
+    "map50_95": 0.5740863614582853,
+    "far_ap50": 0.8599134039408886,
+    "n_det": 13741
+   },
+   "nano_eval_ms": {
+    "read": 10.522137359817862,
+    "pre": 17.629994682138204,
+    "infer": 64.12135020588175,
+    "nms": 6.836134262004634
+   }
+  },
+  "yolov11s_sgc_p345_pruned": {
+   "source": "weights/prune/yolov11s_sgc_p345/best.pt",
+   "paper_fp32_fps": 9.8,
+   "trt_fp16": {
+    "gpu_ms_min": 64.6602,
+    "gpu_ms_max": 65.1973,
+    "gpu_ms_mean": 64.8509,
+    "gpu_ms_median": 64.8496,
+    "fps_gpu_mean": 15.419986461251888,
+    "host_ms_mean": 65.3777,
+    "host_ms_median": 65.376,
+    "host_ms_p99": 65.4902,
+    "fps_host_mean": 15.295735396014237,
+    "throughput_qps": 15.2942,
+    "trt_version": "8.2.1",
+    "n_iter": 471,
+    "gpu_ms_p50": 64.8496,
+    "gpu_ms_p95": 64.9087,
+    "gpu_ms_p99": 64.96787
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9639004667020622,
+    "map50_95": 0.5958146649761827,
+    "far_ap50": 0.9025730944602047,
+    "n_det": 35279
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9636569986423412,
+    "map50_95": 0.5963496632075002,
+    "far_ap50": 0.9008638847668832,
+    "n_det": 35525
+   },
+   "nano_eval_ms": {
+    "read": 10.578915196092566,
+    "pre": 17.671559927985072,
+    "infer": 68.93739232995722,
+    "nms": 16.52998718211893
+   }
+  },
+  "yolov11s_sgc_p45_pruned": {
+   "source": "weights/prune/yolov11s_sgc_p45/best.pt",
+   "paper_fp32_fps": 13.5,
+   "trt_fp16": {
+    "gpu_ms_min": 39.3008,
+    "gpu_ms_max": 40.04,
+    "gpu_ms_mean": 39.383,
+    "gpu_ms_median": 39.3809,
+    "fps_gpu_mean": 25.391666455069444,
+    "host_ms_mean": 39.8869,
+    "host_ms_median": 39.8848,
+    "host_ms_p99": 39.9609,
+    "fps_host_mean": 25.07088793563802,
+    "throughput_qps": 25.0668,
+    "trt_version": "8.2.1",
+    "n_iter": 770,
+    "gpu_ms_p50": 39.3809,
+    "gpu_ms_p95": 39.4336,
+    "gpu_ms_p99": 39.45762
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9408716503178319,
+    "map50_95": 0.5118137668038838,
+    "far_ap50": 0.8623783338443776,
+    "n_det": 17758
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9405545376575706,
+    "map50_95": 0.5112396881131317,
+    "far_ap50": 0.8637792399213645,
+    "n_det": 17852
+   },
+   "nano_eval_ms": {
+    "read": 10.572953007940669,
+    "pre": 17.752540355868405,
+    "infer": 43.08699262193113,
+    "nms": 8.181491696028388
+   }
+  },
+  "yolov8n": {
+   "source": "runs/nscale/yolov8n_s0/weights/best.pt",
+   "paper_fp32_fps": null,
+   "trt_fp16": {
+    "gpu_ms_min": 45.1641,
+    "gpu_ms_max": 45.6377,
+    "gpu_ms_mean": 45.2646,
+    "gpu_ms_median": 45.2529,
+    "fps_gpu_mean": 22.092319384242874,
+    "host_ms_mean": 45.7916,
+    "host_ms_median": 45.7793,
+    "host_ms_p99": 46.1309,
+    "fps_host_mean": 21.838066370251312,
+    "throughput_qps": 21.8347,
+    "trt_version": "8.2.1",
+    "n_iter": 672,
+    "gpu_ms_p50": 45.2529,
+    "gpu_ms_p95": 45.36565,
+    "gpu_ms_p99": 45.593357
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9435894456110838,
+    "map50_95": 0.5354369909936733,
+    "far_ap50": 0.8565779813920108,
+    "n_det": 23551
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9428295965222638,
+    "map50_95": 0.535506244527381,
+    "far_ap50": 0.8561047433225163,
+    "n_det": 23599
+   },
+   "nano_eval_ms": {
+    "read": 10.567122770255082,
+    "pre": 17.673388667943073,
+    "infer": 49.25498900395178,
+    "nms": 10.817841489901184
+   }
+  },
+  "yolov11n": {
+   "source": "runs/nscale/yolov11n_s0/weights/best.pt",
+   "paper_fp32_fps": null,
+   "trt_fp16": {
+    "gpu_ms_min": 48.2354,
+    "gpu_ms_max": 48.5371,
+    "gpu_ms_mean": 48.3165,
+    "gpu_ms_median": 48.3135,
+    "fps_gpu_mean": 20.696863390353194,
+    "host_ms_mean": 48.8435,
+    "host_ms_median": 48.8408,
+    "host_ms_p99": 48.9375,
+    "fps_host_mean": 20.47355328754082,
+    "throughput_qps": 20.4708,
+    "trt_version": "8.2.1",
+    "n_iter": 630,
+    "gpu_ms_p50": 48.3135,
+    "gpu_ms_p95": 48.37221,
+    "gpu_ms_p99": 48.410969
+   },
+   "acc_onnx_fp32": {
+    "map50": 0.9493101478689809,
+    "map50_95": 0.478659675801143,
+    "far_ap50": 0.8851491479940978,
+    "n_det": 14616
+   },
+   "acc_trt_fp16": {
+    "map50": 0.9495846790291278,
+    "map50_95": 0.4788930357699721,
+    "far_ap50": 0.886033079764478,
+    "n_det": 14651
+   },
+   "nano_eval_ms": {
+    "read": 12.39224302364164,
+    "pre": 17.615931372070918,
+    "infer": 52.03549593593925,
+    "nms": 6.9092770020943135
+   }
+  }
+ }
+}
