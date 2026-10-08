@@ -63,6 +63,7 @@ Scripts and results added with the revised manuscript. All results are in `paper
 | `run_prune5.sh`, `train_seed_prune.py`, `e4_eval.py` | `prune5_results.json` | pruned models of Table 7, seeds 0-4 |
 | `e5_nano/` | `e5_trt.json` | TensorRT FP16 on the Jetson Nano (Tables 1 and 7; see `e5_nano/README.md`) |
 | `extract_e12_frames.py`, `e12_external_test.py` | `e12_external_test.json` | external test set (below) |
+| `run_nscale.sh`, `nscale_eval.py`, `e5_nano/benchmark_pytorch_e5.py` | `nscale_results.json`, `e5_pytorch_fp32_nscale.csv` | n-scale references YOLOv8n and YOLO11n, seeds 0-4, and their FP32 throughput on the Jetson Nano |
 
 Seed 0 of each pruned model is the original pruned checkpoint; seeds 1-4 are trained by
 `run_prune5.sh` with the same per-layer widths. The architectures before pruning are in

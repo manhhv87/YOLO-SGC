@@ -1,0 +1,6 @@
+Model,Latency_ms,FPS
+yolov8s,217.15,4.6
+yolov8s_sgc_p45_prune,35.87,27.9
+yolov8n,85.97,11.6
+yolov11n,90.59,11.0
+yolov8s,217.10,4.6

@@ -37,3 +37,18 @@ python e5_nano/score_e5.py                     # -> paper_results/e5_trt.json
 FP16 throughput is 1000 divided by the mean GPU compute time reported by `trtexec` (batch 1). The
 accuracy change is measured between the FP16 engine and the FP32 ONNX model with the same 640x640
 input and the same pre- and post-processing.
+
+## PyTorch FP32: YOLOv8n and YOLO11n
+
+`benchmark_pytorch_e5.py` times the seed-0 YOLOv8n and YOLO11n models in FP32 on the Nano with
+PyTorch, as in the Nano FP32 columns of Tables 1 and 7. On the PC, export them to TorchScript:
+
+```python
+from ultralytics import YOLO
+for m in ("yolov8n", "yolov11n"):
+    YOLO(f"runs/nscale/{m}_s0/weights/best.pt").export(format="torchscript", imgsz=640, batch=1)
+```
+
+and copy the two files to `e5_nano/torchscript/yolov8n.torchscript` and
+`e5_nano/torchscript/yolov11n.torchscript`. On the Nano, `/usr/bin/python3 benchmark_pytorch_e5.py`
+writes `results_nano/fps_jetson_e5.csv`, kept as `paper_results/e5_pytorch_fp32_nscale.csv`.
