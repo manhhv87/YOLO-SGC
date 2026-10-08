@@ -84,9 +84,7 @@ large as in the training images. The scale is estimated on two fields and applie
 eight, in five rotations (`e12_external_test.py`). `paper_results/e12_external_test.json` gives
 the out-of-fold mAP@50, far-class AP and mAP@50-95 of every training run.
 
-The images and labels are released under CC BY 4.0. The videos were recorded in the Nam Sach
-campaign of the MaizeHorizon dataset
-([doi:10.5281/zenodo.21962807](https://doi.org/10.5281/zenodo.21962807)).
+The images and labels are released under CC BY 4.0.
 
 ## Licence
 
