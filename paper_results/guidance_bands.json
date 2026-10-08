@@ -1,0 +1,469 @@
+{
+ "tau": 0.25,
+ "n_images": 500,
+ "image_px": 640,
+ "definitions": {
+  "present_pct": "% images with a box of the band at conf >= tau",
+  "dx_px": "mean |x_pred - x_gt| of the band centroid, pixels",
+  "lowiou_pct": "% predicted band boxes with IoU < 0.5 to the ground-truth box of the band",
+  "loo_deg": "mean reduction of the angular error when the predicted centroid of the band is replaced by the ground-truth centroid (images with a line and a box of the band)"
+ },
+ "runs": {
+  "yolov8s": {
+   "weights/main/yolov8s/best.pt": {
+    "ang_mean": 1.9698375016017131,
+    "n_lines": 497,
+    "bands": {
+     "near": {
+      "present_pct": 99.4,
+      "dx_px": 8.470020524452872,
+      "lowiou_pct": 0.2012072434607646,
+      "loo_deg": 0.4625861553444878
+     },
+     "mid_near": {
+      "present_pct": 99.4,
+      "dx_px": 6.769825687830596,
+      "lowiou_pct": 3.0181086519114686,
+      "loo_deg": -0.005234990104707072
+     },
+     "mid_far": {
+      "present_pct": 96.2,
+      "dx_px": 5.776202854148563,
+      "lowiou_pct": 5.405405405405405,
+      "loo_deg": -0.020900182227920696
+     },
+     "far": {
+      "present_pct": 90.0,
+      "dx_px": 4.289510862562392,
+      "lowiou_pct": 6.444444444444445,
+      "loo_deg": 0.19098107260929229
+     }
+    }
+   },
+   "weights/seed/yolov8s_s1/best.pt": {
+    "ang_mean": 2.228193722551378,
+    "n_lines": 499,
+    "bands": {
+     "near": {
+      "present_pct": 99.4,
+      "dx_px": 9.531390376254107,
+      "lowiou_pct": 0.4024144869215292,
+      "loo_deg": 0.5483467888588186
+     },
+     "mid_near": {
+      "present_pct": 99.8,
+      "dx_px": 7.520581491963419,
+      "lowiou_pct": 1.8036072144288577,
+      "loo_deg": 0.04161401801229616
+     },
+     "mid_far": {
+      "present_pct": 99.6,
+      "dx_px": 7.1998992215198685,
+      "lowiou_pct": 5.421686746987952,
+      "loo_deg": 0.05803448453165836
+     },
+     "far": {
+      "present_pct": 94.39999999999999,
+      "dx_px": 5.557212312342756,
+      "lowiou_pct": 13.559322033898304,
+      "loo_deg": 0.2336050314553863
+     }
+    }
+   },
+   "weights/seed/yolov8s_s2/best.pt": {
+    "ang_mean": 2.1517747252776913,
+    "n_lines": 500,
+    "bands": {
+     "near": {
+      "present_pct": 100.0,
+      "dx_px": 10.525717399597168,
+      "lowiou_pct": 0.8,
+      "loo_deg": 0.7248994205739937
+     },
+     "mid_near": {
+      "present_pct": 100.0,
+      "dx_px": 9.572312126159668,
+      "lowiou_pct": 3.8,
+      "loo_deg": 0.1228980616320274
+     },
+     "mid_far": {
+      "present_pct": 100.0,
+      "dx_px": 8.269015655517578,
+      "lowiou_pct": 6.2,
+      "loo_deg": 0.03852878437727451
+     },
+     "far": {
+      "present_pct": 97.2,
+      "dx_px": 6.107602719907407,
+      "lowiou_pct": 10.699588477366255,
+      "loo_deg": 0.0941401108693159
+     }
+    }
+   },
+   "runs/seed5/yolov8s_s3/weights/best.pt": {
+    "ang_mean": 2.17966446153985,
+    "n_lines": 498,
+    "bands": {
+     "near": {
+      "present_pct": 99.6,
+      "dx_px": 9.612799257638464,
+      "lowiou_pct": 0.4016064257028112,
+      "loo_deg": 0.516929282428837
+     },
+     "mid_near": {
+      "present_pct": 99.6,
+      "dx_px": 8.239872836683649,
+      "lowiou_pct": 3.614457831325301,
+      "loo_deg": 0.06800271611297237
+     },
+     "mid_far": {
+      "present_pct": 99.0,
+      "dx_px": 6.935527709036163,
+      "lowiou_pct": 7.07070707070707,
+      "loo_deg": -0.016385882737703382
+     },
+     "far": {
+      "present_pct": 92.2,
+      "dx_px": 5.046853046872352,
+      "lowiou_pct": 8.893709327548807,
+      "loo_deg": 0.22204521969181573
+     }
+    }
+   },
+   "runs/seed5/yolov8s_s4/weights/best.pt": {
+    "ang_mean": 2.0647970195027976,
+    "n_lines": 499,
+    "bands": {
+     "near": {
+      "present_pct": 100.0,
+      "dx_px": 10.340146965026856,
+      "lowiou_pct": 0.4,
+      "loo_deg": 0.48216647667103557
+     },
+     "mid_near": {
+      "present_pct": 99.8,
+      "dx_px": 8.231504275946913,
+      "lowiou_pct": 1.6032064128256511,
+      "loo_deg": -0.03259226311761066
+     },
+     "mid_far": {
+      "present_pct": 99.4,
+      "dx_px": 7.673285846978845,
+      "lowiou_pct": 6.036217303822937,
+      "loo_deg": 0.041646260649694525
+     },
+     "far": {
+      "present_pct": 98.0,
+      "dx_px": 7.27091656120456,
+      "lowiou_pct": 14.489795918367346,
+      "loo_deg": 0.2537005939265111
+     }
+    }
+   }
+  },
+  "yolov8s_sgc_p345": {
+   "weights/main/yolov8s_sgc_p345/best.pt": {
+    "ang_mean": 2.1003663470901257,
+    "n_lines": 499,
+    "bands": {
+     "near": {
+      "present_pct": 99.8,
+      "dx_px": 10.071842981005958,
+      "lowiou_pct": 0.2004008016032064,
+      "loo_deg": 0.9117862646715936
+     },
+     "mid_near": {
+      "present_pct": 99.8,
+      "dx_px": 6.697380769228888,
+      "lowiou_pct": 1.2024048096192386,
+      "loo_deg": 0.17254576584075554
+     },
+     "mid_far": {
+      "present_pct": 98.8,
+      "dx_px": 5.630453990055964,
+      "lowiou_pct": 3.4412955465587043,
+      "loo_deg": -0.03579793979364349
+     },
+     "far": {
+      "present_pct": 97.2,
+      "dx_px": 5.1841010576413,
+      "lowiou_pct": 7.818930041152264,
+      "loo_deg": 0.18806067322580866
+     }
+    }
+   },
+   "weights/seed/yolov8s_sgc_p345_s1/best.pt": {
+    "ang_mean": 2.121856925817611,
+    "n_lines": 499,
+    "bands": {
+     "near": {
+      "present_pct": 99.6,
+      "dx_px": 9.102139254650437,
+      "lowiou_pct": 0.4016064257028112,
+      "loo_deg": 0.6292375200535896
+     },
+     "mid_near": {
+      "present_pct": 99.8,
+      "dx_px": 8.087189179384158,
+      "lowiou_pct": 1.002004008016032,
+      "loo_deg": 0.1647219023899832
+     },
+     "mid_far": {
+      "present_pct": 98.4,
+      "dx_px": 6.513357930067109,
+      "lowiou_pct": 5.284552845528456,
+      "loo_deg": -0.049117843919082436
+     },
+     "far": {
+      "present_pct": 93.60000000000001,
+      "dx_px": 5.225617563622629,
+      "lowiou_pct": 6.41025641025641,
+      "loo_deg": 0.18109545086025808
+     }
+    }
+   },
+   "weights/seed/yolov8s_sgc_p345_s2/best.pt": {
+    "ang_mean": 2.14514130058943,
+    "n_lines": 500,
+    "bands": {
+     "near": {
+      "present_pct": 100.0,
+      "dx_px": 10.449824279785156,
+      "lowiou_pct": 0.4,
+      "loo_deg": 0.49077958257566723
+     },
+     "mid_near": {
+      "present_pct": 99.6,
+      "dx_px": 8.046279210163407,
+      "lowiou_pct": 1.0040160642570282,
+      "loo_deg": -0.08087397478062827
+     },
+     "mid_far": {
+      "present_pct": 98.0,
+      "dx_px": 6.343385789832291,
+      "lowiou_pct": 5.510204081632653,
+      "loo_deg": -0.03179418273103874
+     },
+     "far": {
+      "present_pct": 90.8,
+      "dx_px": 5.195776473057952,
+      "lowiou_pct": 9.251101321585903,
+      "loo_deg": 0.0917850949167521
+     }
+    }
+   },
+   "runs/seed5/yolov8s_sgc_p345_s3/weights/best.pt": {
+    "ang_mean": 2.769196890158867,
+    "n_lines": 498,
+    "bands": {
+     "near": {
+      "present_pct": 100.0,
+      "dx_px": 13.809448181152344,
+      "lowiou_pct": 0.6,
+      "loo_deg": 1.1706031157671226
+     },
+     "mid_near": {
+      "present_pct": 99.2,
+      "dx_px": 8.216614238677487,
+      "lowiou_pct": 1.411290322580645,
+      "loo_deg": 0.01633072856964027
+     },
+     "mid_far": {
+      "present_pct": 97.6,
+      "dx_px": 6.638851744229676,
+      "lowiou_pct": 4.918032786885246,
+      "loo_deg": -0.10804890560390397
+     },
+     "far": {
+      "present_pct": 88.4,
+      "dx_px": 4.7454697449282826,
+      "lowiou_pct": 8.3710407239819,
+      "loo_deg": 0.07225050284255616
+     }
+    }
+   },
+   "runs/seed5/yolov8s_sgc_p345_s4/weights/best.pt": {
+    "ang_mean": 2.144161100256811,
+    "n_lines": 498,
+    "bands": {
+     "near": {
+      "present_pct": 99.8,
+      "dx_px": 9.463356637285802,
+      "lowiou_pct": 0.4008016032064128,
+      "loo_deg": 0.5524078527531259
+     },
+     "mid_near": {
+      "present_pct": 99.6,
+      "dx_px": 7.942029255939774,
+      "lowiou_pct": 1.6064257028112447,
+      "loo_deg": -0.09161609413729227
+     },
+     "mid_far": {
+      "present_pct": 97.6,
+      "dx_px": 6.782833990503529,
+      "lowiou_pct": 5.327868852459016,
+      "loo_deg": -0.0049667612537276674
+     },
+     "far": {
+      "present_pct": 92.2,
+      "dx_px": 4.907144989212268,
+      "lowiou_pct": 8.026030368763557,
+      "loo_deg": 0.2444262604220954
+     }
+    }
+   }
+  },
+  "yolov8s_sgc_p45": {
+   "weights/main/yolov8s_sgc_p45/best.pt": {
+    "ang_mean": 1.839237989173695,
+    "n_lines": 499,
+    "bands": {
+     "near": {
+      "present_pct": 99.8,
+      "dx_px": 8.0346549116299,
+      "lowiou_pct": 0.4008016032064128,
+      "loo_deg": 0.5900697145491274
+     },
+     "mid_near": {
+      "present_pct": 99.8,
+      "dx_px": 6.3689513196926075,
+      "lowiou_pct": 1.6032064128256511,
+      "loo_deg": -0.014769798135781588
+     },
+     "mid_far": {
+      "present_pct": 99.2,
+      "dx_px": 6.2635337383516365,
+      "lowiou_pct": 4.838709677419355,
+      "loo_deg": 0.03841395446386491
+     },
+     "far": {
+      "present_pct": 96.6,
+      "dx_px": 5.211225410919505,
+      "lowiou_pct": 9.730848861283643,
+      "loo_deg": 0.32309474383241243
+     }
+    }
+   },
+   "weights/seed/yolov8s_sgc_p45_s1/best.pt": {
+    "ang_mean": 2.1680694838359913,
+    "n_lines": 500,
+    "bands": {
+     "near": {
+      "present_pct": 100.0,
+      "dx_px": 9.924205368041992,
+      "lowiou_pct": 0.6,
+      "loo_deg": 0.5406732149713196
+     },
+     "mid_near": {
+      "present_pct": 99.6,
+      "dx_px": 7.799573492333592,
+      "lowiou_pct": 2.0080321285140563,
+      "loo_deg": -0.027353169196360543
+     },
+     "mid_far": {
+      "present_pct": 96.8,
+      "dx_px": 6.728427303724052,
+      "lowiou_pct": 4.75206611570248,
+      "loo_deg": 0.0557785546758186
+     },
+     "far": {
+      "present_pct": 95.39999999999999,
+      "dx_px": 5.8827636606788225,
+      "lowiou_pct": 10.90146750524109,
+      "loo_deg": 0.11949099230316589
+     }
+    }
+   },
+   "weights/seed/yolov8s_sgc_p45_s2/best.pt": {
+    "ang_mean": 1.87865309493404,
+    "n_lines": 500,
+    "bands": {
+     "near": {
+      "present_pct": 100.0,
+      "dx_px": 8.791414886474609,
+      "lowiou_pct": 0.6,
+      "loo_deg": 0.6176871135084431
+     },
+     "mid_near": {
+      "present_pct": 100.0,
+      "dx_px": 6.97383186340332,
+      "lowiou_pct": 0.6,
+      "loo_deg": -0.02908688112098011
+     },
+     "mid_far": {
+      "present_pct": 99.0,
+      "dx_px": 6.130174055003156,
+      "lowiou_pct": 3.2323232323232323,
+      "loo_deg": 0.071529574492842
+     },
+     "far": {
+      "present_pct": 96.8,
+      "dx_px": 5.3242118772396365,
+      "lowiou_pct": 9.297520661157025,
+      "loo_deg": 0.17370401599914548
+     }
+    }
+   },
+   "runs/seed5/yolov8s_sgc_p45_s3/weights/best.pt": {
+    "ang_mean": 2.40749838475231,
+    "n_lines": 494,
+    "bands": {
+     "near": {
+      "present_pct": 99.6,
+      "dx_px": 10.879380444446243,
+      "lowiou_pct": 0.6024096385542169,
+      "loo_deg": 0.7108409069850692
+     },
+     "mid_near": {
+      "present_pct": 98.8,
+      "dx_px": 8.616766709547777,
+      "lowiou_pct": 2.2267206477732793,
+      "loo_deg": 0.032760579239785106
+     },
+     "mid_far": {
+      "present_pct": 94.19999999999999,
+      "dx_px": 6.657799382624859,
+      "lowiou_pct": 4.246284501061571,
+      "loo_deg": -0.06268206593850047
+     },
+     "far": {
+      "present_pct": 89.8,
+      "dx_px": 4.92229789614943,
+      "lowiou_pct": 6.013363028953229,
+      "loo_deg": 0.18903793987073741
+     }
+    }
+   },
+   "runs/seed5/yolov8s_sgc_p45_s4/weights/best.pt": {
+    "ang_mean": 2.8676510073006445,
+    "n_lines": 497,
+    "bands": {
+     "near": {
+      "present_pct": 99.4,
+      "dx_px": 13.253512380588463,
+      "lowiou_pct": 1.0060362173038229,
+      "loo_deg": 0.9188129147384061
+     },
+     "mid_near": {
+      "present_pct": 99.2,
+      "dx_px": 9.15095656148849,
+      "lowiou_pct": 1.6129032258064515,
+      "loo_deg": -0.28791788436893456
+     },
+     "mid_far": {
+      "present_pct": 94.39999999999999,
+      "dx_px": 6.287311133691819,
+      "lowiou_pct": 4.4491525423728815,
+      "loo_deg": 0.07439568158599005
+     },
+     "far": {
+      "present_pct": 89.0,
+      "dx_px": 4.667170518167903,
+      "lowiou_pct": 8.089887640449438,
+      "loo_deg": 0.11399569116496208
+     }
+    }
+   }
+  }
+ }
+}
