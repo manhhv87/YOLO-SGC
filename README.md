@@ -46,6 +46,7 @@ python make_deploy_generic.py                # remove the prior branch after tra
 bash run_prune5.sh                           # pruned models (see below)
 python eval_guidance_line.py --split test    # guidance-line quality
 python bench_all_fps.py                      # throughput
+python stats.py                              # mean +/- SD and statistical tests of Tables 1-8
 ```
 
 Training uses SGD (momentum 0.937, weight decay 5e-4), batch 32, cosine schedule with
